@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
+    "jspdf": "^2.5.2",
     "next": "16.1.6",
+    "pg": "^8.11.5",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
