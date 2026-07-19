@@ -473,292 +473,337 @@ export default function Home() {
 
   return (
     <>
-    <Head>
-      <meta
-        name="google-site-verification"
-        content="FwICLrj7I7T0K4oLso3MNY_7-ztr1EpxLVze5LBEHKM" />
-    </Head>
-    <div className={`${styles.page} ${display.variable} ${body.variable}`}>
-      <main className={styles.main}>
-        <header className={styles.header}>
-          <div className={styles.brand}>
-            <span className={styles.brandMark} aria-hidden="true">
-              <svg viewBox="0 0 48 48" role="img" aria-label="">
-                <defs>
-                  <linearGradient id="brandGradient" x1="0" x2="1" y1="0" y2="1">
-                    <stop offset="0%" stopColor="#ff6b4a" />
-                    <stop offset="100%" stopColor="#f2542d" />
-                  </linearGradient>
-                </defs>
-                <rect x="2" y="2" width="44" height="44" rx="14" fill="url(#brandGradient)" />
-                <path
-                  d="M24 12l10 24h-4.6l-2.2-5.2H20.8L18.6 36H14l10-24zm1.8 14.6-3-7.6-3 7.6h6z"
-                  fill="#fff"
-                />
-              </svg>
-            </span>
-            <div>
-              <p className={styles.brandName}>Academic Simplifier</p>
-              <p className={styles.brandTag}>B1 English in seconds</p>
+      <Head>
+        <title>Simplify Academic Papers with AI | Simplify Academic</title>
+
+        <meta
+          name="description"
+          content="Simplify complex academic papers into clear English while preserving technical terms. Free AI academic text simplifier."
+        />
+
+        <meta
+          name="keywords"
+          content="academic paper, simplify academic text, research paper summarizer, AI academic tool"
+        />
+        <meta
+          name="google-site-verification"
+          content="FwICLrj7I7T0K4oLso3MNY_7-ztr1EpxLVze5LBEHKM" />
+      </Head>
+      <div className={`${styles.page} ${display.variable} ${body.variable}`}>
+        <main className={styles.main}>
+          <header className={styles.header}>
+            <div className={styles.brand}>
+              <span className={styles.brandMark} aria-hidden="true">
+                <svg viewBox="0 0 48 48" role="img" aria-label="">
+                  <defs>
+                    <linearGradient id="brandGradient" x1="0" x2="1" y1="0" y2="1">
+                      <stop offset="0%" stopColor="#ff6b4a" />
+                      <stop offset="100%" stopColor="#f2542d" />
+                    </linearGradient>
+                  </defs>
+                  <rect x="2" y="2" width="44" height="44" rx="14" fill="url(#brandGradient)" />
+                  <path
+                    d="M24 12l10 24h-4.6l-2.2-5.2H20.8L18.6 36H14l10-24zm1.8 14.6-3-7.6-3 7.6h6z"
+                    fill="#fff"
+                  />
+                </svg>
+              </span>
+              <div>
+                <p className={styles.brandName}>Academic Simplifier</p>
+                <p className={styles.brandTag}>B1 English in seconds</p>
+              </div>
             </div>
+            <a
+              className={styles.proButton}
+              href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Upgrade to Pro
+            </a>
+          </header>
+
+          <div className={styles.disclosureBar}>
+            <span>Quality checks enabled</span>
+            <span>Consistency-focused results</span>
           </div>
-          <a
-            className={styles.proButton}
-            href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Upgrade to Pro
-          </a>
-        </header>
 
-        <div className={styles.disclosureBar}>
-          <span>Quality checks enabled</span>
-          <span>Consistency-focused results</span>
-        </div>
+          <section className={styles.hero}>
+            <div>
+              <h1>Turn complex academic text into clear, readable English.</h1>
+              <p>
+                Fast, focused, and designed for comprehension. Paste your text,
+                hit simplify, and share a clean B1 version immediately.
+              </p>
+              <div className={styles.heroActions}>
+                <button
+                  className={styles.primaryButton}
+                  onClick={handleSimplify}
+                  disabled={loading || (!isPro && useCount >= 3) || !text.trim()}
+                >
+                  {loading ? "Simplifying..." : "Simplify Now"}
+                </button>
+                <button className={styles.ghostButton} onClick={handleSample}>
+                  Use a sample
+                </button>
+              </div>
+              <div className={styles.usageCard}>
+                <div>
+                  <p className={styles.usageTitle}>Free usage</p>
+                  <p className={styles.usageValue}>
+                    {isPro
+                      ? "Unlimited (Pro)"
+                      : `${remaining} of 3 simplifications left today`}
+                  </p>
+                </div>
+                <div className={styles.usageBar}>
+                  <span
+                    style={{ width: `${isPro ? 100 : (remaining / 3) * 100}%` }}
+                    aria-hidden="true"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className={styles.flow}>
+              <div className={styles.flowStep}>
+                <span>1</span>
+                <div>
+                  <h3>Paste or type</h3>
+                  <p>Add your academic paragraph, abstract, or notes.</p>
+                </div>
+              </div>
+              <div className={styles.flowStep}>
+                <span>2</span>
+                <div>
+                  <h3>Simplify instantly</h3>
+                  <p>We rewrite to B1 English while keeping meaning intact.</p>
+                </div>
+              </div>
+              <div className={styles.flowStep}>
+                <span>3</span>
+                <div>
+                  <h3>Copy & share</h3>
+                  <p>Export clean text for students, teams, or readers.</p>
+                </div>
+              </div>
+            </div>
+          </section>
 
-        <section className={styles.hero}>
-          <div>
-            <h1>Turn complex academic text into clear, readable English.</h1>
-            <p>
-              Fast, focused, and designed for comprehension. Paste your text,
-              hit simplify, and share a clean B1 version immediately.
-            </p>
-            <div className={styles.heroActions}>
+          <section className={styles.workspace}>
+            <div className={styles.inputHeader}>
+              <div>
+                <h2>Your input</h2>
+                <p>Ideal for abstracts, notes, or research summaries.</p>
+                <p className={styles.modelHint}>
+                  Fast = quickest response. Quality = more accurate rewrite.
+                </p>
+              </div>
+              <div className={styles.inputActions}>
+                <select
+                  className={styles.modelSelect}
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                >
+                  <option value="fast">Fast model</option>
+                  <option value="quality">Quality model</option>
+                </select>
+                <button className={styles.secondaryButton} onClick={handleClear}>
+                  Clear
+                </button>
+                <button className={styles.secondaryButton} onClick={handleSample}>
+                  Paste sample
+                </button>
+              </div>
+            </div>
+
+            <div className={styles.protectedTerms}>
+              <label htmlFor="protectedTerms">Korunacak terimler</label>
+              <input
+                id="protectedTerms"
+                className={styles.protectedInput}
+                placeholder="Örn: GDP, HIV, CRISPR (virgülle ayır)"
+                value={protectedTerms}
+                onChange={(e) => setProtectedTerms(e.target.value)}
+              />
+              <p>Bu terimler sadeleştirme sırasında aynen korunur.</p>
+              {protectedTermList.length > 0 && (
+                <div className={styles.termPills}>
+                  {protectedTermList.map((term) => (
+                    <span key={term} className={styles.termPill}>
+                      {term}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className={styles.protectedTerms}>
+              <label htmlFor="reductionTarget">Reduction hedefi</label>
+              <div className={styles.reductionRow}>
+                <input
+                  id="reductionTarget"
+                  type="range"
+                  min="0"
+                  max="70"
+                  step="5"
+                  value={reductionTarget}
+                  onChange={(e) => setReductionTarget(Number(e.target.value))}
+                  disabled={!isPro}
+                />
+                <span className={styles.reductionValue}>{reductionTarget}%</span>
+                {!isPro && (
+                  <span className={styles.badgeMuted}>Pro</span>
+                )}
+              </div>
+              <p>
+                Çıktının ne kadar sadeleşeceğini hedefle. Pro’da aktif.
+              </p>
+              {!isPro && (
+                <a
+                  className={styles.proLink}
+                  href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Pro ile reduction ayarı aç
+                </a>
+              )}
+            </div>
+
+            <div className={styles.protectedTerms}>
+              <label htmlFor="proEmail">Pro durumunu kontrol et</label>
+              <div className={styles.reductionRow}>
+                <input
+                  id="proEmail"
+                  type="email"
+                  className={styles.protectedInput}
+                  placeholder="Ödeme e-postan"
+                  value={proEmail}
+                  onChange={(e) => setProEmail(e.target.value)}
+                />
+                <button
+                  className={styles.secondaryButton}
+                  onClick={handleProCheck}
+                  disabled={proLoading || !proEmail}
+                >
+                  {proLoading ? "Checking..." : "Check"}
+                </button>
+              </div>
+              {proStatus?.isPro && <p>Pro aktif görünüyor.</p>}
+              {proStatus?.error && (
+                <p className={styles.summaryError}>{proStatus.error}</p>
+              )}
+            </div>
+
+            <textarea
+              className={styles.textarea}
+              placeholder="Paste academic text here..."
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              disabled={loading || (!isPro && useCount >= 3)}
+            />
+
+            <div className={styles.inputMeta}>
+              <span>{textStats.words} words</span>
+              <span>{textStats.chars} characters</span>
+              {latencyMs !== null && <span>{latencyMs} ms</span>}
+            </div>
+
+            <div className={styles.submitRow}>
               <button
                 className={styles.primaryButton}
                 onClick={handleSimplify}
                 disabled={loading || (!isPro && useCount >= 3) || !text.trim()}
               >
-                {loading ? "Simplifying..." : "Simplify Now"}
+                {loading ? "Simplifying..." : "Simplify"}
               </button>
-              <button className={styles.ghostButton} onClick={handleSample}>
-                Use a sample
-              </button>
-            </div>
-            <div className={styles.usageCard}>
-              <div>
-                <p className={styles.usageTitle}>Free usage</p>
-                <p className={styles.usageValue}>
-                  {isPro
-                    ? "Unlimited (Pro)"
-                    : `${remaining} of 3 simplifications left today`}
-                </p>
-              </div>
-              <div className={styles.usageBar}>
-                <span
-                  style={{ width: `${isPro ? 100 : (remaining / 3) * 100}%` }}
-                  aria-hidden="true"
+              <label className={styles.compareToggle}>
+                <input
+                  type="checkbox"
+                  checked={showCompare}
+                  onChange={(e) => setShowCompare(e.target.checked)}
                 />
+                Compare view
+              </label>
+              <div className={styles.submitHint}>
+                {!isPro && useCount >= 3 ? (
+                  <span>Upgrade to continue without limits.</span>
+                ) : (
+                  <span>Keep it short for the fastest response.</span>
+                )}
               </div>
             </div>
-          </div>
-          <div className={styles.flow}>
-            <div className={styles.flowStep}>
-              <span>1</span>
-              <div>
-                <h3>Paste or type</h3>
-                <p>Add your academic paragraph, abstract, or notes.</p>
-              </div>
+
+            <div className={styles.shortcutHint}>
+              <span>`Ctrl + Enter` to simplify</span>
+              <span>`Esc` to clear</span>
             </div>
-            <div className={styles.flowStep}>
-              <span>2</span>
-              <div>
-                <h3>Simplify instantly</h3>
-                <p>We rewrite to B1 English while keeping meaning intact.</p>
-              </div>
-            </div>
-            <div className={styles.flowStep}>
-              <span>3</span>
-              <div>
-                <h3>Copy & share</h3>
-                <p>Export clean text for students, teams, or readers.</p>
-              </div>
-            </div>
-          </div>
-        </section>
 
-        <section className={styles.workspace}>
-          <div className={styles.inputHeader}>
-            <div>
-              <h2>Your input</h2>
-              <p>Ideal for abstracts, notes, or research summaries.</p>
-              <p className={styles.modelHint}>
-                Fast = quickest response. Quality = more accurate rewrite.
-              </p>
-            </div>
-            <div className={styles.inputActions}>
-              <select
-                className={styles.modelSelect}
-                value={model}
-                onChange={(e) => setModel(e.target.value)}
-              >
-                <option value="fast">Fast model</option>
-                <option value="quality">Quality model</option>
-              </select>
-              <button className={styles.secondaryButton} onClick={handleClear}>
-                Clear
-              </button>
-              <button className={styles.secondaryButton} onClick={handleSample}>
-                Paste sample
-              </button>
-            </div>
-          </div>
+            {error && <div className={styles.error}>{error}</div>}
 
-          <div className={styles.protectedTerms}>
-            <label htmlFor="protectedTerms">Korunacak terimler</label>
-            <input
-              id="protectedTerms"
-              className={styles.protectedInput}
-              placeholder="Örn: GDP, HIV, CRISPR (virgülle ayır)"
-              value={protectedTerms}
-              onChange={(e) => setProtectedTerms(e.target.value)}
-            />
-            <p>Bu terimler sadeleştirme sırasında aynen korunur.</p>
-            {protectedTermList.length > 0 && (
-              <div className={styles.termPills}>
-                {protectedTermList.map((term) => (
-                  <span key={term} className={styles.termPill}>
-                    {term}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className={styles.protectedTerms}>
-            <label htmlFor="reductionTarget">Reduction hedefi</label>
-            <div className={styles.reductionRow}>
-              <input
-                id="reductionTarget"
-                type="range"
-                min="0"
-                max="70"
-                step="5"
-                value={reductionTarget}
-                onChange={(e) => setReductionTarget(Number(e.target.value))}
-                disabled={!isPro}
-              />
-              <span className={styles.reductionValue}>{reductionTarget}%</span>
-              {!isPro && (
-                <span className={styles.badgeMuted}>Pro</span>
-              )}
-            </div>
-            <p>
-              Çıktının ne kadar sadeleşeceğini hedefle. Pro’da aktif.
-            </p>
-            {!isPro && (
-              <a
-                className={styles.proLink}
-                href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Pro ile reduction ayarı aç
-              </a>
-            )}
-          </div>
-
-          <div className={styles.protectedTerms}>
-            <label htmlFor="proEmail">Pro durumunu kontrol et</label>
-            <div className={styles.reductionRow}>
-              <input
-                id="proEmail"
-                type="email"
-                className={styles.protectedInput}
-                placeholder="Ödeme e-postan"
-                value={proEmail}
-                onChange={(e) => setProEmail(e.target.value)}
-              />
-              <button
-                className={styles.secondaryButton}
-                onClick={handleProCheck}
-                disabled={proLoading || !proEmail}
-              >
-                {proLoading ? "Checking..." : "Check"}
-              </button>
-            </div>
-            {proStatus?.isPro && <p>Pro aktif görünüyor.</p>}
-            {proStatus?.error && (
-              <p className={styles.summaryError}>{proStatus.error}</p>
-            )}
-          </div>
-
-          <textarea
-            className={styles.textarea}
-            placeholder="Paste academic text here..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            disabled={loading || (!isPro && useCount >= 3)}
-          />
-
-          <div className={styles.inputMeta}>
-            <span>{textStats.words} words</span>
-            <span>{textStats.chars} characters</span>
-            {latencyMs !== null && <span>{latencyMs} ms</span>}
-          </div>
-
-          <div className={styles.submitRow}>
-            <button
-              className={styles.primaryButton}
-              onClick={handleSimplify}
-              disabled={loading || (!isPro && useCount >= 3) || !text.trim()}
-            >
-              {loading ? "Simplifying..." : "Simplify"}
-            </button>
-            <label className={styles.compareToggle}>
-              <input
-                type="checkbox"
-                checked={showCompare}
-                onChange={(e) => setShowCompare(e.target.checked)}
-              />
-              Compare view
-            </label>
-            <div className={styles.submitHint}>
-              {!isPro && useCount >= 3 ? (
-                <span>Upgrade to continue without limits.</span>
-              ) : (
-                <span>Keep it short for the fastest response.</span>
-              )}
-            </div>
-          </div>
-
-          <div className={styles.shortcutHint}>
-            <span>`Ctrl + Enter` to simplify</span>
-            <span>`Esc` to clear</span>
-          </div>
-
-          {error && <div className={styles.error}>{error}</div>}
-
-          {hasResult && showCompare && (
-            <div className={styles.compareGrid}>
-              <div className={styles.compareCard}>
-                <div className={styles.resultHeader}>
-                  <h3>Original</h3>
-                  <span className={styles.badgeMuted}>Input</span>
+            {hasResult && showCompare && (
+              <div className={styles.compareGrid}>
+                <div className={styles.compareCard}>
+                  <div className={styles.resultHeader}>
+                    <h3>Original</h3>
+                    <span className={styles.badgeMuted}>Input</span>
+                  </div>
+                  <p>{text.trim()}</p>
+                  <div className={styles.resultActions}>
+                    <button
+                      className={styles.secondaryButton}
+                      onClick={handleCopyOriginal}
+                    >
+                      Copy original
+                    </button>
+                  </div>
                 </div>
-                <p>{text.trim()}</p>
-                <div className={styles.resultActions}>
-                  <button
-                    className={styles.secondaryButton}
-                    onClick={handleCopyOriginal}
-                  >
-                    Copy original
-                  </button>
+                <div className={styles.compareCard}>
+                  <div className={styles.resultHeader}>
+                    <h3>Simplified</h3>
+                    <button
+                      className={styles.secondaryButton}
+                      onClick={handleCopy}
+                    >
+                      {copyStatus === "copied"
+                        ? "Copied"
+                        : copyStatus === "failed"
+                          ? "Copy failed"
+                          : "Copy"}
+                    </button>
+                  </div>
+                  <p>{result}</p>
+                  <div className={styles.resultActions}>
+                    <button
+                      className={styles.secondaryButton}
+                      onClick={() => handleDownload("txt")}
+                    >
+                      Download TXT
+                    </button>
+                    <button
+                      className={styles.secondaryButton}
+                      onClick={() => handleDownload("pdf")}
+                    >
+                      Download PDF
+                    </button>
+                    <button className={styles.secondaryButton} onClick={handleShare}>
+                      Share
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div className={styles.compareCard}>
+            )}
+
+            {hasResult && !showCompare && (
+              <div className={styles.resultCard}>
                 <div className={styles.resultHeader}>
-                  <h3>Simplified</h3>
-                  <button
-                    className={styles.secondaryButton}
-                    onClick={handleCopy}
-                  >
+                  <h3>Simplified result</h3>
+                  <button className={styles.secondaryButton} onClick={handleCopy}>
                     {copyStatus === "copied"
                       ? "Copied"
                       : copyStatus === "failed"
                         ? "Copy failed"
-                      : "Copy"}
+                        : "Copy"}
                   </button>
                 </div>
                 <p>{result}</p>
@@ -780,201 +825,167 @@ export default function Home() {
                   </button>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {hasResult && !showCompare && (
-            <div className={styles.resultCard}>
-              <div className={styles.resultHeader}>
-                <h3>Simplified result</h3>
-                <button className={styles.secondaryButton} onClick={handleCopy}>
-                  {copyStatus === "copied"
-                    ? "Copied"
-                    : copyStatus === "failed"
-                      ? "Copy failed"
-                      : "Copy"}
-                </button>
+            {hasResult && (
+              <div className={styles.statsRow}>
+                <div className={styles.statCard}>
+                  <p>Output words</p>
+                  <strong>{outputStats.words}</strong>
+                </div>
+                <div className={styles.statCard}>
+                  <p>Estimated reading</p>
+                  <strong>{outputStats.minutes} min</strong>
+                </div>
+                <div className={styles.statCard}>
+                  <p>Reduction</p>
+                  <strong>{reductionPct}%</strong>
+                </div>
               </div>
-              <p>{result}</p>
-              <div className={styles.resultActions}>
-                <button
-                  className={styles.secondaryButton}
-                  onClick={() => handleDownload("txt")}
-                >
-                  Download TXT
-                </button>
-                <button
-                  className={styles.secondaryButton}
-                  onClick={() => handleDownload("pdf")}
-                >
-                  Download PDF
-                </button>
-                <button className={styles.secondaryButton} onClick={handleShare}>
-                  Share
-                </button>
-              </div>
-            </div>
-          )}
+            )}
 
-          {hasResult && (
-            <div className={styles.statsRow}>
-              <div className={styles.statCard}>
-                <p>Output words</p>
-                <strong>{outputStats.words}</strong>
+            {hasResult && (
+              <div className={styles.summaryCard}>
+                <div className={styles.resultHeader}>
+                  <h3>Visual summary</h3>
+                  <span className={styles.badgeMuted}>3-5 bullets</span>
+                </div>
+                {summaryLoading && <p>Generating summary...</p>}
+                {summaryError && (
+                  <p className={styles.summaryError}>{summaryError}</p>
+                )}
+                {!summaryLoading && !summaryError && summaryItems.length > 0 && (
+                  <ul className={styles.summaryList}>
+                    {summaryItems.slice(0, 5).map((item, index) => (
+                      <li key={`${index}-${item}`}>{item}</li>
+                    ))}
+                  </ul>
+                )}
               </div>
-              <div className={styles.statCard}>
-                <p>Estimated reading</p>
-                <strong>{outputStats.minutes} min</strong>
-              </div>
-              <div className={styles.statCard}>
-                <p>Reduction</p>
-                <strong>{reductionPct}%</strong>
-              </div>
-            </div>
-          )}
+            )}
 
-          {hasResult && (
-            <div className={styles.summaryCard}>
-              <div className={styles.resultHeader}>
-                <h3>Visual summary</h3>
-                <span className={styles.badgeMuted}>3-5 bullets</span>
+            {hasResult && (
+              <div className={styles.summaryCard}>
+                <div className={styles.resultHeader}>
+                  <h3>Meaning check</h3>
+                  <span className={styles.badgeMuted}>Auto</span>
+                </div>
+                {meaningLoading && <p>Checking meaning...</p>}
+                {meaningError && (
+                  <p className={styles.summaryError}>{meaningError}</p>
+                )}
+                {!meaningLoading && !meaningError && meaningCheck && (
+                  <>
+                    {meaningCheck.risk === "high" && (
+                      <div className={styles.riskWarning}>
+                        Meaning drift risk detected. Try Quality mode for a safer
+                        rewrite.
+                        <button
+                          className={styles.secondaryButton}
+                          onClick={handleQualityRetry}
+                        >
+                          Re-run with Quality
+                        </button>
+                      </div>
+                    )}
+                    <div className={styles.meaningGrid}>
+                      <div>
+                        <p>Match</p>
+                        <strong>{meaningCheck.match ? "Yes" : "No"}</strong>
+                      </div>
+                      <div>
+                        <p>Risk</p>
+                        <strong
+                          className={
+                            meaningCheck.risk === "high"
+                              ? styles.riskHigh
+                              : meaningCheck.risk === "medium"
+                                ? styles.riskMedium
+                                : styles.riskLow
+                          }
+                        >
+                          {meaningCheck.risk}
+                        </strong>
+                      </div>
+                      <div>
+                        <p>Notes</p>
+                        <strong>{meaningCheck.notes}</strong>
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
-              {summaryLoading && <p>Generating summary...</p>}
-              {summaryError && (
-                <p className={styles.summaryError}>{summaryError}</p>
-              )}
-              {!summaryLoading && !summaryError && summaryItems.length > 0 && (
-                <ul className={styles.summaryList}>
-                  {summaryItems.slice(0, 5).map((item, index) => (
-                    <li key={`${index}-${item}`}>{item}</li>
+            )}
+
+            {history.length > 0 && (
+              <div className={styles.history}>
+                <div className={styles.historyHeader}>
+                  <h3>Recent results</h3>
+                  <button
+                    className={styles.secondaryButton}
+                    onClick={handleHistoryClear}
+                  >
+                    Clear history
+                  </button>
+                </div>
+                <div className={styles.historyList}>
+                  {sortedHistory.map((entry) => (
+                    <div key={entry.id} className={styles.historyItem}>
+                      <div>
+                        <span>{new Date(entry.createdAt).toLocaleString()}</span>
+                        <strong>{entry.output.slice(0, 80)}...</strong>
+                      </div>
+                      <div className={styles.historyActions}>
+                        <button
+                          className={styles.secondaryButton}
+                          onClick={() => handleHistorySelect(entry)}
+                        >
+                          Use
+                        </button>
+                        <button
+                          className={styles.secondaryButton}
+                          onClick={() => handleHistoryPin(entry.id)}
+                        >
+                          {entry.pinned ? "Unpin" : "Pin"}
+                        </button>
+                        <button
+                          className={styles.secondaryButton}
+                          onClick={() => handleHistoryRerun(entry)}
+                        >
+                          Re-run
+                        </button>
+                        <button
+                          className={styles.secondaryButton}
+                          onClick={() => handleHistoryDelete(entry.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
                   ))}
-                </ul>
-              )}
-            </div>
-          )}
-
-          {hasResult && (
-            <div className={styles.summaryCard}>
-              <div className={styles.resultHeader}>
-                <h3>Meaning check</h3>
-                <span className={styles.badgeMuted}>Auto</span>
+                </div>
               </div>
-              {meaningLoading && <p>Checking meaning...</p>}
-              {meaningError && (
-                <p className={styles.summaryError}>{meaningError}</p>
-              )}
-              {!meaningLoading && !meaningError && meaningCheck && (
-                <>
-                  {meaningCheck.risk === "high" && (
-                    <div className={styles.riskWarning}>
-                      Meaning drift risk detected. Try Quality mode for a safer
-                      rewrite.
-                      <button
-                        className={styles.secondaryButton}
-                        onClick={handleQualityRetry}
-                      >
-                        Re-run with Quality
-                      </button>
-                    </div>
-                  )}
-                  <div className={styles.meaningGrid}>
-                    <div>
-                      <p>Match</p>
-                      <strong>{meaningCheck.match ? "Yes" : "No"}</strong>
-                    </div>
-                    <div>
-                      <p>Risk</p>
-                      <strong
-                        className={
-                          meaningCheck.risk === "high"
-                            ? styles.riskHigh
-                            : meaningCheck.risk === "medium"
-                              ? styles.riskMedium
-                              : styles.riskLow
-                        }
-                      >
-                        {meaningCheck.risk}
-                      </strong>
-                    </div>
-                    <div>
-                      <p>Notes</p>
-                      <strong>{meaningCheck.notes}</strong>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
+            )}
+          </section>
 
-          {history.length > 0 && (
-            <div className={styles.history}>
-              <div className={styles.historyHeader}>
-                <h3>Recent results</h3>
-                <button
-                  className={styles.secondaryButton}
-                  onClick={handleHistoryClear}
-                >
-                  Clear history
-                </button>
-              </div>
-              <div className={styles.historyList}>
-                {sortedHistory.map((entry) => (
-                  <div key={entry.id} className={styles.historyItem}>
-                    <div>
-                      <span>{new Date(entry.createdAt).toLocaleString()}</span>
-                      <strong>{entry.output.slice(0, 80)}...</strong>
-                    </div>
-                    <div className={styles.historyActions}>
-                      <button
-                        className={styles.secondaryButton}
-                        onClick={() => handleHistorySelect(entry)}
-                      >
-                        Use
-                      </button>
-                      <button
-                        className={styles.secondaryButton}
-                        onClick={() => handleHistoryPin(entry.id)}
-                      >
-                        {entry.pinned ? "Unpin" : "Pin"}
-                      </button>
-                      <button
-                        className={styles.secondaryButton}
-                        onClick={() => handleHistoryRerun(entry)}
-                      >
-                        Re-run
-                      </button>
-                      <button
-                        className={styles.secondaryButton}
-                        onClick={() => handleHistoryDelete(entry.id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <section className={styles.proSection}>
+            <div>
+              <h2>Go Pro for unlimited simplifications</h2>
+              <p>$4.99/month · 7-day free trial · Cancel anytime</p>
+              <p>Pro ile: Reduction hedefi (çıktı kısalma oranı) ayarı</p>
             </div>
-          )}
-        </section>
-
-        <section className={styles.proSection}>
-          <div>
-            <h2>Go Pro for unlimited simplifications</h2>
-            <p>$4.99/month · 7-day free trial · Cancel anytime</p>
-            <p>Pro ile: Reduction hedefi (çıktı kısalma oranı) ayarı</p>
-          </div>
-          <a
-            className={styles.primaryButton}
-            href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Start free trial
-          </a>
-        </section>
-      </main>
-      <Analytics />
-    </div> </>
+            <a
+              className={styles.primaryButton}
+              href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Start free trial
+            </a>
+          </section>
+        </main>
+        <Analytics />
+      </div> </>
   );
 }
 
