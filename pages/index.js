@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { Fraunces, Manrope } from "next/font/google";
 import { jsPDF } from "jspdf";
 import styles from "../styles/Home.module.css";
+import Head from "next/head";
 
 const display = Fraunces({
   subsets: ["latin"],
