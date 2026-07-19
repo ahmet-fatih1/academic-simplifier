@@ -471,6 +471,12 @@ export default function Home() {
   const hasResult = Boolean(result);
 
   return (
+    <>
+    <Head>
+      <meta
+        name="google-site-verification"
+        content="FwICLrj7I7T0K4oLso3MNY_7-ztr1EpxLVze5LBEHKM" />
+    </Head>
     <div className={`${styles.page} ${display.variable} ${body.variable}`}>
       <main className={styles.main}>
         <header className={styles.header}>
@@ -967,7 +973,7 @@ export default function Home() {
         </section>
       </main>
       <Analytics />
-    </div>
+    </div> </>
   );
 }
 
