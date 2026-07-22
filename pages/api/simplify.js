@@ -1,4 +1,5 @@
 import { ensureSchema, query } from "../../lib/db";
+import { getPersonaById } from "../../lib/personas";
 
 const isProStatus = (status, cancelled) => {
   if (cancelled) return false;
@@ -21,7 +22,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { text, model, task, language, level, terms, reductionTarget, email } =
+  const { text, model, task, language, level, terms, reductionTarget, email, personaId } =
     req.body;
 
   if (!text) {
@@ -42,7 +43,6 @@ export default async function handler(req, res) {
       task === "summary" || task === "verify" || task === "bundle"
         ? task
         : "simplify";
-    const targetLevel = level || "B1";
     const targetLanguage = language || "English";
     const protectedTerms =
       Array.isArray(terms) && terms.length
@@ -124,6 +124,7 @@ ${text.original}
 Simplified:
 ${text.simplified}`;
     } else {
+      const persona = getPersonaById(personaId);
       const termsLine = protectedTerms.length
         ? `Preserve these terms exactly as written: ${protectedTerms.join(", ")}.\n`
         : "";
@@ -135,7 +136,7 @@ ${text.simplified}`;
         reductionValue !== null
           ? `Aim for roughly ${reductionValue}% shorter than the original.\n`
           : "";
-      prompt = `Rewrite this in very simple ${targetLanguage} (${targetLevel} level). Keep meaning, use short sentences, and be concise.\n${termsLine}${reductionLine}\n${text}`;
+      prompt = `${persona.systemPrompt}\n${termsLine}${reductionLine}\n${text}`;
     }
 
     const response = await fetch(url, {
@@ -162,7 +163,6 @@ ${text.simplified}`;
     });
 
     const responseText = await response.text();
-    console.log("Response status:", response.status);
 
     if (!response.ok) {
       if (selectedModel === "gemini-2.5-pro") {

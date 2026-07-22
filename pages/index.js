@@ -4,6 +4,7 @@ import { Fraunces, Manrope } from "next/font/google";
 import { jsPDF } from "jspdf";
 import styles from "../styles/Home.module.css";
 import Head from "next/head";
+import personas from "../lib/personas";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function Home() {
   const [showCompare, setShowCompare] = useState(true);
   const [history, setHistory] = useState([]);
   const [model, setModel] = useState("fast");
+  const [selectedPersona, setSelectedPersona] = useState("general");
   const [summaryItems, setSummaryItems] = useState([]);
   const [summaryLoading, setSummaryLoading] = useState(false);
   const [summaryError, setSummaryError] = useState("");
@@ -197,6 +199,7 @@ export default function Home() {
         body: JSON.stringify({
           text,
           model,
+          personaId: selectedPersona,
           reductionTarget: isPro ? reductionTarget : undefined,
           email: proEmail || undefined,
           terms: protectedTerms
@@ -597,6 +600,9 @@ export default function Home() {
                 <p className={styles.modelHint}>
                   Fast = quickest response. Quality = more accurate rewrite.
                 </p>
+                <p className={styles.modelHint}>
+                  {personas.find((p) => p.id === selectedPersona)?.description}
+                </p>
               </div>
               <div className={styles.inputActions}>
                 <select
@@ -606,6 +612,17 @@ export default function Home() {
                 >
                   <option value="fast">Fast model</option>
                   <option value="quality">Quality model</option>
+                </select>
+                <select
+                  className={styles.modelSelect}
+                  value={selectedPersona}
+                  onChange={(e) => setSelectedPersona(e.target.value)}
+                >
+                  {personas.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.label}
+                    </option>
+                  ))}
                 </select>
                 <button className={styles.secondaryButton} onClick={handleClear}>
                   Clear
