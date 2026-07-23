@@ -878,127 +878,119 @@ export default function Home() {
             </div>
           </section>
 
-          <section
-            className={`${styles.workspace} ${chatOpen && hasResult ? styles.workspaceWithChat : ""}`}
-          >
-            <div className={`${styles.workspaceMain} ${hasResult ? styles.workspaceSplit : ""}`}>
-              <div className={styles.inputPanel}>
-              <div className={styles.inputHeader}>
-                <div>
-                <h2>{t.input.title}</h2>
-                <p>{t.input.subtitle}</p>
-                <p className={styles.modelHint}>
-                  {t.input.modelHint}
-                </p>
-                <p className={styles.modelHint}>
-                  {personas.find((p) => p.id === selectedPersona)?.description[lang]}
-                </p>
-              </div>
-              <div className={styles.inputActions}>
-                <select
-                  className={styles.modelSelect}
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
-                >
-                  <option value="fast">{t.input.fastModel}</option>
-                  <option value="quality">{t.input.qualityModel}</option>
-                </select>
-                <select
-                  className={styles.modelSelect}
-                  value={selectedPersona}
-                  onChange={(e) => setSelectedPersona(e.target.value)}
-                >
-                  {personas.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.label[lang]}
-                    </option>
-                  ))}
-                </select>
-                <button className={styles.secondaryButton} onClick={handleClear}>
-                  {t.input.clear}
-                </button>
-                <button className={styles.secondaryButton} onClick={handleSample}>
-                  {t.input.pasteSample}
-                </button>
-              </div>
+          <section className={styles.editorArea}>
+            <div className={styles.settingsBar}>
+              <select
+                className={styles.modelSelect}
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+              >
+                <option value="fast">{t.input.fastModel}</option>
+                <option value="quality">{t.input.qualityModel}</option>
+              </select>
+              <select
+                className={styles.modelSelect}
+                value={selectedPersona}
+                onChange={(e) => setSelectedPersona(e.target.value)}
+              >
+                {personas.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.label[lang]}
+                  </option>
+                ))}
+              </select>
+              <button className={styles.secondaryButton} onClick={handleClear}>
+                {t.input.clear}
+              </button>
+              <button className={styles.secondaryButton} onClick={handleSample}>
+                {t.input.pasteSample}
+              </button>
             </div>
 
-            <div className={styles.protectedTerms}>
-              <label htmlFor="protectedTerms">{t.settings.protectedTerms}</label>
-              <input
-                id="protectedTerms"
-                className={styles.protectedInput}
-                placeholder={t.settings.protectedPlaceholder}
-                value={protectedTerms}
-                onChange={(e) => setProtectedTerms(e.target.value)}
-              />
-              <p>{t.settings.protectedHelp}</p>
-              {protectedTermList.length > 0 && (
-                <div className={styles.termPills}>
-                  {protectedTermList.map((term) => (
-                    <span key={term} className={styles.termPill}>
-                      {term}
-                    </span>
-                  ))}
+            <details className={styles.settingsAccordion}>
+              <summary className={styles.settingsAccordionSummary}>
+                {lang === "tr" ? "Gelişmiş ayarlar" : "Advanced settings"}
+                <span className={styles.settingsAccordionArrow}>▼</span>
+              </summary>
+              <div className={styles.settingsAccordionBody}>
+                <div className={styles.protectedTerms}>
+                  <label htmlFor="protectedTerms">{t.settings.protectedTerms}</label>
+                  <input
+                    id="protectedTerms"
+                    className={styles.protectedInput}
+                    placeholder={t.settings.protectedPlaceholder}
+                    value={protectedTerms}
+                    onChange={(e) => setProtectedTerms(e.target.value)}
+                  />
+                  <p>{t.settings.protectedHelp}</p>
+                  {protectedTermList.length > 0 && (
+                    <div className={styles.termPills}>
+                      {protectedTermList.map((term) => (
+                        <span key={term} className={styles.termPill}>
+                          {term}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
 
-            <div className={styles.protectedTerms}>
-              <label htmlFor="reductionTarget">{t.settings.reductionTarget}</label>
-              <div className={styles.reductionRow}>
-                <input
-                  id="reductionTarget"
-                  type="range"
-                  min="0"
-                  max="70"
-                  step="5"
-                  value={reductionTarget}
-                  onChange={(e) => setReductionTarget(Number(e.target.value))}
-                  disabled={!isPro}
-                />
-                <span className={styles.reductionValue}>{reductionTarget}%</span>
-                {!isPro && (
-                  <span className={styles.badgeMuted}>{t.settings.protectedBadge}</span>
-                )}
-              </div>
-              <p>{t.settings.reductionHelp}</p>
-              {!isPro && (
-                <a
-                  className={styles.proLink}
-                  href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t.settings.reductionLink}
-                </a>
-              )}
-            </div>
+                <div className={styles.protectedTerms}>
+                  <label htmlFor="reductionTarget">{t.settings.reductionTarget}</label>
+                  <div className={styles.reductionRow}>
+                    <input
+                      id="reductionTarget"
+                      type="range"
+                      min="0"
+                      max="70"
+                      step="5"
+                      value={reductionTarget}
+                      onChange={(e) => setReductionTarget(Number(e.target.value))}
+                      disabled={!isPro}
+                    />
+                    <span className={styles.reductionValue}>{reductionTarget}%</span>
+                    {!isPro && (
+                      <span className={styles.badgeMuted}>{t.settings.protectedBadge}</span>
+                    )}
+                  </div>
+                  <p>{t.settings.reductionHelp}</p>
+                  {!isPro && (
+                    <a
+                      className={styles.proLink}
+                      href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {t.settings.reductionLink}
+                    </a>
+                  )}
+                </div>
 
-            <div className={styles.protectedTerms}>
-              <label htmlFor="proEmail">{t.settings.proCheck}</label>
-              <div className={styles.reductionRow}>
-                <input
-                  id="proEmail"
-                  type="email"
-                  className={styles.protectedInput}
-                  placeholder={t.settings.proEmail}
-                  value={proEmail}
-                  onChange={(e) => setProEmail(e.target.value)}
-                />
-                <button
-                  className={styles.secondaryButton}
-                  onClick={handleProCheck}
-                  disabled={proLoading || !proEmail}
-                >
-                  {proLoading ? t.settings.checking : t.settings.check}
-                </button>
+                <div className={styles.protectedTerms}>
+                  <label htmlFor="proEmail">{t.settings.proCheck}</label>
+                  <div className={styles.reductionRow}>
+                    <input
+                      id="proEmail"
+                      type="email"
+                      className={styles.protectedInput}
+                      placeholder={t.settings.proEmail}
+                      value={proEmail}
+                      onChange={(e) => setProEmail(e.target.value)}
+                    />
+                    <button
+                      className={styles.secondaryButton}
+                      onClick={handleProCheck}
+                      disabled={proLoading || !proEmail}
+                    >
+                      {proLoading ? t.settings.checking : t.settings.check}
+                    </button>
+                  </div>
+                  {proStatus?.isPro && <p>{t.settings.proActive}</p>}
+                  {proStatus?.error && (
+                    <p className={styles.summaryError}>{proStatus.error}</p>
+                  )}
+                </div>
               </div>
-              {proStatus?.isPro && <p>{t.settings.proActive}</p>}
-              {proStatus?.error && (
-                <p className={styles.summaryError}>{proStatus.error}</p>
-              )}
-            </div>
+            </details>
 
             <div
               className={`${styles.pdfDropzone} ${isDragging ? styles.pdfDropzoneActive : ""}`}
@@ -1088,10 +1080,10 @@ export default function Home() {
             </div>
 
             {error && <div className={styles.error}>{error}</div>}
-            </div>
+          </section>
 
-            {hasResult && (
-              <div className={styles.outputPanel}>
+          {hasResult && (
+            <section className={styles.editorArea}>
 
             {hasResult && showCompare && (
               <div className={styles.compareGrid}>
@@ -1276,10 +1268,11 @@ export default function Home() {
                 {chatOpen ? t.chat.toggleClose : t.chat.toggleOpen}
               </button>
             )}
-            </div>
-            )}
+            </section>
+          )}
 
-            {history.length > 0 && (
+          {history.length > 0 && (
+            <section className={styles.editorArea}>
               <div className={styles.history}>
                 <div className={styles.historyHeader}>
                   <h3>{t.history.title}</h3>
@@ -1332,23 +1325,27 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-            )}
-            </div>
+            </section>
+          )}
 
-            {hasResult && chatOpen && (
-              <ChatPanel
-                isOpen={chatOpen}
-                onToggle={handleChatToggle}
-                messages={chatMessages}
-                onSend={handleChatSend}
-                streaming={chatStreaming}
-                streamingText={chatStreamText}
-                remainingQuota={chatQuota}
-                isPro={isPro}
-                t={t.chat}
-              />
-            )}
-          </section>
+          {chatOpen && (
+            <>
+              <div className={styles.chatBackdrop} onClick={handleChatToggle} />
+              <div className={styles.chatDrawer}>
+                <ChatPanel
+                  isOpen={chatOpen}
+                  onToggle={handleChatToggle}
+                  messages={chatMessages}
+                  onSend={handleChatSend}
+                  streaming={chatStreaming}
+                  streamingText={chatStreamText}
+                  remainingQuota={chatQuota}
+                  isPro={isPro}
+                  t={t.chat}
+                />
+              </div>
+            </>
+          )}
 
           <section className={styles.proSection}>
             <div>

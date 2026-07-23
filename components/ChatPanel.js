@@ -42,7 +42,7 @@ export default function ChatPanel({
   if (!isOpen) return null;
 
   return (
-    <div className={styles.chatPanel}>
+    <>
       <div className={styles.chatHeader}>
         <span className={styles.chatTitle}>{t.panelTitle}</span>
         <button
@@ -104,6 +104,6 @@ export default function ChatPanel({
           {t.quota(remainingQuota)}
         </div>
       )}
-    </div>
+    </>
   );
 }
