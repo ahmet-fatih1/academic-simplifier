@@ -542,6 +542,7 @@
   border: 1.5px solid var(--border);
   background: var(--surface);
   color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
   font-weight: 600;
   cursor: pointer;
   color-scheme: inherit;
@@ -654,11 +655,17 @@
   border: 1.5px solid var(--border);
   background: var(--surface);
   color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
   font-size: 15px;
   line-height: 1.7;
   resize: vertical;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   color-scheme: inherit;
+}
+
+.textarea::placeholder {
+  color: var(--muted);
+  -webkit-text-fill-color: var(--muted);
 }
 
 .textarea:focus {
@@ -705,6 +712,7 @@
   border: 1.5px solid var(--border);
   font-size: 14px;
   color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
   transition: border-color 0.2s ease;
   color-scheme: inherit;
 }
@@ -1212,8 +1220,14 @@
   max-height: 120px;
   line-height: 1.4;
   color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
   color-scheme: inherit;
   background: var(--surface);
+}
+
+.chatInput::placeholder {
+  color: var(--muted);
+  -webkit-text-fill-color: var(--muted);
 }
 
 .chatInput:focus {

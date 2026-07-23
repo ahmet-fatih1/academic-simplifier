@@ -1,13 +1,9 @@
 :root {
-  --background: #ffffff;
-  --foreground: #1a1f25;
+  color-scheme: light;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1c2126;
-    --foreground: #e4e6e8;
-  }
+html.darkMode {
+  color-scheme: dark;
 }
 
 html,
@@ -17,8 +13,6 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -49,12 +43,12 @@ a {
 .errorBoundary h2 {
   font-size: 24px;
   font-weight: 700;
-  color: var(--foreground);
+  color: #1a1f25;
 }
 
 .errorBoundary p {
   font-size: 16px;
-  color: var(--muted, #5f6b73);
+  color: #5f6b73;
   max-width: 400px;
 }
 
@@ -62,8 +56,8 @@ a {
   padding: 10px 24px;
   border-radius: 12px;
   border: none;
-  background: var(--foreground);
-  color: var(--background);
+  background: #1a1f25;
+  color: #ffffff;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -77,4 +71,17 @@ a {
 .errorBoundaryBtn:focus-visible {
   outline: 2px solid #ff6b4a;
   outline-offset: 2px;
+}
+
+html.darkMode .errorBoundary h2 {
+  color: #e4e6e8;
+}
+
+html.darkMode .errorBoundary p {
+  color: #9aa3ab;
+}
+
+html.darkMode .errorBoundaryBtn {
+  background: #e4e6e8;
+  color: #1c2126;
 }

@@ -76,9 +76,12 @@ export default function Home() {
 
     const savedDark = localStorage.getItem("dark_mode");
     if (savedDark !== null) {
-      setDarkMode(savedDark === "true");
+      const isDark = savedDark === "true";
+      setDarkMode(isDark);
+      document.documentElement.classList.toggle("darkMode", isDark);
     } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
       setDarkMode(true);
+      document.documentElement.classList.add("darkMode");
     }
 
     const params = new URLSearchParams(window.location.search);
@@ -98,6 +101,7 @@ export default function Home() {
     const next = !darkMode;
     setDarkMode(next);
     localStorage.setItem("dark_mode", String(next));
+    document.documentElement.classList.toggle("darkMode", next);
   };
 
   useEffect(() => {
