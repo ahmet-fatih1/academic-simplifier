@@ -37,7 +37,7 @@ export default async function handler(req, res) {
     // DOĞRU MODEL: gemini-2.5-flash
     const selectedModel =
       model === "quality" ? "gemini-2.5-pro" : "gemini-2.5-flash";
-    const url = `https://generativelanguage.googleapis.com/v1/models/${selectedModel}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    const url = `https://generativelanguage.googleapis.com/v1/models/${selectedModel}:generateContent`;
 
     const selectedTask =
       task === "summary" || task === "verify" || task === "bundle"
@@ -87,7 +87,7 @@ export default async function handler(req, res) {
         [identity, today]
       );
       const count = rows[0]?.count ?? 0;
-      if (count > 3) {
+      if (count > 5) {
         return res.status(429).json({
           error: "Free limit reached. Upgrade to Pro for unlimited use.",
         });
@@ -143,6 +143,7 @@ ${text.simplified}`;
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "x-goog-api-key": process.env.GEMINI_API_KEY,
       },
       body: JSON.stringify({
         contents: [
@@ -166,11 +167,12 @@ ${text.simplified}`;
 
     if (!response.ok) {
       if (selectedModel === "gemini-2.5-pro") {
-        const fallbackUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
+        const fallbackUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent`;
         const fallback = await fetch(fallbackUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "x-goog-api-key": process.env.GEMINI_API_KEY,
           },
           body: JSON.stringify({
             contents: [
@@ -217,10 +219,9 @@ ${text.simplified}`;
         }
       }
 
-      console.error("Gemini hatası:", responseText);
+      console.error("Gemini error:", responseText);
       return res.status(response.status).json({
-        error: "Gemini API hatası",
-        details: responseText,
+        error: "Simplification request failed",
       });
     }
 
@@ -293,10 +294,9 @@ ${text.simplified}`;
 
     res.status(200).json({ result });
   } catch (error) {
-    console.error("Hata:", error);
+    console.error("Simplify error:", error);
     res.status(500).json({
-      error: "Hata oluştu",
-      details: error.message,
+      error: "Something went wrong",
     });
   }
 }

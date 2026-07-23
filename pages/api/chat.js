@@ -148,10 +148,9 @@ export default async function handler(req, res) {
 
     if (!geminiResponse.ok) {
       const errText = await geminiResponse.text();
-      console.error("Gemini chat hatası:", errText);
+      console.error("Gemini chat error:", errText);
       return res.status(geminiResponse.status).json({
-        error: "Gemini API error",
-        details: errText,
+        error: "Chat request failed",
       });
     }
 
@@ -211,14 +210,13 @@ export default async function handler(req, res) {
       res.end();
     }
   } catch (error) {
-    console.error("Chat hatası:", error);
+    console.error("Chat error:", error);
     if (!res.headersSent) {
       res.status(500).json({
-        error: "Chat error occurred",
-        details: error.message,
+        error: "Chat request failed",
       });
     } else {
-      res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+      res.write(`data: ${JSON.stringify({ error: "Chat request failed" })}\n\n`);
       res.end();
     }
   }

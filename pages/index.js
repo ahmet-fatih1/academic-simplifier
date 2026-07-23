@@ -83,18 +83,6 @@ export default function Home() {
       setDarkMode(true);
       document.documentElement.classList.add("darkMode");
     }
-
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("pro") === "1") {
-      localStorage.setItem("is_pro", "true");
-      setIsPro(true);
-    }
-
-    const emailParam = params.get("email");
-    if (emailParam) {
-      setProEmail(emailParam);
-      localStorage.setItem("pro_email", emailParam);
-    }
   }, []);
 
   const toggleDarkMode = () => {
