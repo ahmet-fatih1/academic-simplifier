@@ -21,29 +21,29 @@ PDF dosyalarını yükleyip doğrudan simplify etme özelliği.
 
 ## Gün 2: UI Bileşenleri
 
-- [ ] Textarea'nın üstüne "Upload PDF" sürükle-bırak alanı
-- [ ] `<input type="file" accept=".pdf">` gizli input
-- [ ] PDF yükleme butonu
-- [ ] Yükleme durumunda spinner/loading state
-- [ ] PDF dosya adı gösterimi (kaldır butonuyla)
-- [ ] styles/Home.module.css'e PDF stilleri
+- [x] Textarea'nın üstüne "Upload PDF" sürükle-bırak alanı
+- [x] `<input type="file" accept=".pdf">` gizli input
+- [x] PDF yükleme butonu
+- [x] Yükleme durumunda spinner/loading state
+- [x] PDF dosya adı gösterimi (kaldır butonuyla)
+- [x] styles/Home.module.css'e PDF stilleri
 
 ## Gün 3: PDF Parsing Mantığı
 
-- [ ] handlePdfUpload(file) fonksiyonu
-- [ ] Dosya boyutu kontrolü (max 10MB)
-- [ ] Dosya tipi kontrolü (sadece .pdf)
-- [ ] PDF'den text çıkarma
-- [ ] Boş PDF / image-only PDF kontrolü
-- [ ] Hata yönetimi
-- [ ] Max karakter limiti kontrolü (50K)
+- [x] handlePdfUpload(file) fonksiyonu
+- [x] Dosya boyutu kontrolü (max 10MB)
+- [x] Dosya tipi kontrolü (sadece .pdf)
+- [x] PDF'den text çıkarma
+- [x] Boş PDF / image-only PDF kontrolü
+- [x] Hata yönetimi
+- [x] Max karakter limiti kontrolü (50K)
 
 ## Gün 4: Entegrasyon ve İyileştirme
 
-- [ ] PDF yüklendiğinde textarea'ya otomatik doldur
-- [ ] Sürükle-bırak ile textarea'ya bırakma
-- [ ] PDF + text yapıştırma birlikte çalışsın
-- [ ] Temizle butonu PDF state'ini de sıfırlasın
+- [x] PDF yüklendiğinde textarea'ya otomatik doldur
+- [x] Sürükle-bırak ile textarea'ya bırakma
+- [x] PDF + text yapıştırma birlikte çalışsın
+- [x] Temizle butonu PDF state'ini de sıfırlasın
 - [ ] History'ye PDF dosya adını kaydet
 
 ## Gün 5: Test, Güvenlik, Dokümantasyon

@@ -49,7 +49,9 @@ export default function Home() {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [pdfFileName, setPdfFileName] = useState("");
   const [pdfError, setPdfError] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
   const abortRef = useRef(null);
+  const pdfInputRef = useRef(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("is_pro");
@@ -325,6 +327,35 @@ export default function Home() {
     } finally {
       setPdfLoading(false);
     }
+  };
+
+  const handlePdfRemove = () => {
+    setPdfFileName("");
+    setPdfError("");
+    setText("");
+    if (pdfInputRef.current) pdfInputRef.current.value = "";
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handlePdfUpload(file);
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) handlePdfUpload(file);
   };
 
   const handleCopy = async () => {
@@ -795,9 +826,52 @@ export default function Home() {
               )}
             </div>
 
+            <div
+              className={`${styles.pdfDropzone} ${isDragging ? styles.pdfDropzoneActive : ""}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <input
+                ref={pdfInputRef}
+                type="file"
+                accept=".pdf"
+                className={styles.pdfFileInput}
+                onChange={handleFileSelect}
+              />
+
+              <div className={styles.pdfUploadRow}>
+                <button
+                  className={styles.secondaryButton}
+                  onClick={() => pdfInputRef.current?.click()}
+                  disabled={pdfLoading || loading}
+                >
+                  {pdfLoading ? "Reading..." : "Upload PDF"}
+                </button>
+
+                {pdfFileName && (
+                  <span className={styles.pdfBadge}>
+                    {pdfFileName}
+                    <button
+                      className={styles.pdfBadgeRemove}
+                      onClick={handlePdfRemove}
+                    >
+                      x
+                    </button>
+                  </span>
+                )}
+
+                {pdfLoading && <span className={styles.pdfSpinner} />}
+              </div>
+
+              {pdfError && (
+                <p className={styles.summaryError}>{pdfError}</p>
+              )}
+            </div>
+
             <textarea
               className={styles.textarea}
-              placeholder="Paste academic text here..."
+              placeholder="Paste academic text here, or upload a PDF above..."
               value={text}
               onChange={(e) => setText(e.target.value)}
               disabled={loading || (!isPro && useCount >= 3)}
