@@ -249,6 +249,7 @@ export default function Home() {
                 : `${Date.now()}-${Math.random().toString(16).slice(2)}`,
             input: text,
             output: data.result,
+            pdfFileName: pdfFileName || "",
             createdAt: Date.now(),
             pinned: false,
           },
@@ -1107,6 +1108,11 @@ export default function Home() {
                     <div key={entry.id} className={styles.historyItem}>
                       <div>
                         <span>{new Date(entry.createdAt).toLocaleString()}</span>
+                        {entry.pdfFileName && (
+                          <span className={styles.pdfBadge} style={{ marginLeft: 8 }}>
+                            {entry.pdfFileName}
+                          </span>
+                        )}
                         <strong>{entry.output.slice(0, 80)}...</strong>
                       </div>
                       <div className={styles.historyActions}>

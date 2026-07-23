@@ -44,13 +44,13 @@ PDF dosyalarını yükleyip doğrudan simplify etme özelliği.
 - [x] Sürükle-bırak ile textarea'ya bırakma
 - [x] PDF + text yapıştırma birlikte çalışsın
 - [x] Temizle butonu PDF state'ini de sıfırlasın
-- [ ] History'ye PDF dosya adını kaydet
+- [x] History'ye PDF dosya adını kaydet
 
 ## Gün 5: Test, Güvenlik, Dokümantasyon
 
-- [ ] Farklı PDF boyutlarını test et
-- [ ] Bozuk PDF testi
-- [ ] Image-only PDF testi
-- [ ] Max boyut aşıldığında uyarı testi
-- [ ] Vercel deploy testi
-- [ ] TASKS.md güncelle
+- [x] Farklı PDF boyutlarını test et
+- [x] Bozuk PDF testi
+- [x] Image-only PDF testi
+- [x] Max boyut aşıldığında uyarı testi
+- [x] Vercel deploy testi
+- [x] TASKS.md güncelle
