@@ -149,6 +149,12 @@ export default function Home() {
   }, [chatQuota]);
 
   useEffect(() => {
+    if (chatMessages.length === 0) {
+      setChatMessages([{ role: "model", content: t.chat.welcome }]);
+    }
+  }, []);
+
+  useEffect(() => {
     const handleError = (event) => {
       console.error("Uncaught error:", event.error || event.message);
     };
@@ -356,8 +362,7 @@ export default function Home() {
     setMeaningError("");
     setPdfFileName("");
     setPdfError("");
-    setChatOpen(false);
-    setChatMessages([]);
+    setChatMessages([{ role: "model", content: t.chat.welcome }]);
     setChatStreamText("");
   };
 
@@ -878,7 +883,9 @@ export default function Home() {
             </div>
           </section>
 
-          <section className={styles.editorArea}>
+          <div className={styles.splitLayout}>
+            <div className={styles.leftPanel}>
+              <section className={styles.editorArea}>
             <div className={styles.settingsBar}>
               <select
                 className={styles.modelSelect}
@@ -1327,6 +1334,23 @@ export default function Home() {
               </div>
             </section>
           )}
+
+            </div>
+
+            <div className={styles.rightPanel}>
+              <ChatPanel
+                isOpen={true}
+                onToggle={handleChatToggle}
+                messages={chatMessages}
+                onSend={handleChatSend}
+                streaming={chatStreaming}
+                streamingText={chatStreamText}
+                remainingQuota={chatQuota}
+                isPro={isPro}
+                t={t.chat}
+              />
+            </div>
+          </div>
 
           {chatOpen && (
             <>

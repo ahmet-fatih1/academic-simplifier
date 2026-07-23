@@ -14,7 +14,6 @@ export default function ChatPanel({
   isPro,
   t,
 }) {
-  const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const chatInputRef = useRef(null);
 

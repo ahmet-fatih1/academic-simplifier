@@ -105,12 +105,12 @@
 }
 
 .main {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 48px 24px 72px;
+  width: 100%;
+  padding: 48px 48px 72px;
   display: flex;
   flex-direction: column;
   gap: 48px;
+  box-sizing: border-box;
 }
 
 .header {
@@ -406,6 +406,34 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.splitLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: start;
+  width: 100%;
+}
+
+.leftPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.rightPanel {
+  position: sticky;
+  top: 24px;
+  height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 
 .settingsBar {
@@ -967,6 +995,18 @@
   .hero {
     grid-template-columns: 1fr;
   }
+
+  .splitLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .rightPanel {
+    display: none;
+  }
+
+  .chatToggleButton {
+    display: flex !important;
+  }
 }
 
 .proSection {
@@ -1016,16 +1056,26 @@
     grid-template-columns: 1fr;
   }
 
+  .splitLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .rightPanel {
+    display: none;
+  }
+
   .chatDrawer {
+    display: flex;
     width: 100% !important;
   }
 
   .chatBackdrop {
-    display: none;
+    display: block;
   }
 }
 
 .chatBackdrop {
+  display: none;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.3);
@@ -1039,12 +1089,12 @@
 }
 
 .chatDrawer {
+  display: none;
   position: fixed;
   right: 0;
   top: 0;
   height: 100vh;
   width: 400px;
-  display: flex;
   flex-direction: column;
   background: var(--surface);
   z-index: 1000;
@@ -1203,7 +1253,7 @@
 }
 
 .chatToggleButton {
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   gap: 8px;
