@@ -6,6 +6,7 @@ import styles from "../styles/Home.module.css";
 import Head from "next/head";
 import personas from "../lib/personas";
 import { extractTextFromPdf } from "../lib/pdf-parser";
+import ChatPanel from "../components/ChatPanel";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -50,6 +51,11 @@ export default function Home() {
   const [pdfFileName, setPdfFileName] = useState("");
   const [pdfError, setPdfError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatStreaming, setChatStreaming] = useState(false);
+  const [chatStreamText, setChatStreamText] = useState("");
+  const [chatQuota, setChatQuota] = useState(10);
   const abortRef = useRef(null);
   const pdfInputRef = useRef(null);
 
@@ -105,6 +111,26 @@ export default function Home() {
   useEffect(() => {
     localStorage.setItem("simplify_history", JSON.stringify(history));
   }, [history]);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("chat_messages");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) setChatMessages(parsed);
+      }
+      const quota = localStorage.getItem("chat_quota");
+      if (quota !== null) setChatQuota(JSON.parse(quota));
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("chat_messages", JSON.stringify(chatMessages));
+  }, [chatMessages]);
+
+  useEffect(() => {
+    localStorage.setItem("chat_quota", JSON.stringify(chatQuota));
+  }, [chatQuota]);
 
   useEffect(() => {
     const handleError = (event) => {
@@ -314,6 +340,9 @@ export default function Home() {
     setMeaningError("");
     setPdfFileName("");
     setPdfError("");
+    setChatOpen(false);
+    setChatMessages([]);
+    setChatStreamText("");
   };
 
   const handlePdfUpload = async (file) => {
@@ -357,6 +386,89 @@ export default function Home() {
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) handlePdfUpload(file);
+  };
+
+  const handleChatToggle = () => {
+    if (!chatOpen && chatMessages.length === 0) {
+      setChatMessages([
+        {
+          role: "model",
+          content:
+            "Merhaba! Metniniz hakkında sorularınızı sorabilirsiniz. Ne bilmek istersiniz?",
+        },
+      ]);
+    }
+    setChatOpen(!chatOpen);
+  };
+
+  const handleChatSend = async (msgText) => {
+    if (!msgText || chatStreaming) return;
+    if (!isPro && chatQuota <= 0) return;
+
+    const userMsg = { role: "user", content: msgText };
+    const newMessages = [...chatMessages, userMsg];
+    setChatMessages(newMessages);
+    setChatStreaming(true);
+    setChatStreamText("");
+
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: newMessages.map((m) => ({
+            role: m.role,
+            content: m.content,
+          })),
+          context: { original: text, simplified: result },
+          model,
+          personaId: selectedPersona,
+          email: proEmail,
+        }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Chat request failed");
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (!line.startsWith("data: ")) continue;
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.text) {
+              fullText += data.text;
+              setChatStreamText(fullText);
+            }
+            if (data.error) throw new Error(data.error);
+          } catch (_) {}
+        }
+      }
+
+      setChatMessages((prev) => [...prev, { role: "model", content: fullText }]);
+      if (!isPro) setChatQuota((q) => Math.max(0, q - 1));
+    } catch (err) {
+      setChatMessages((prev) => [
+        ...prev,
+        { role: "model", content: `Hata: ${err.message}` },
+      ]);
+    } finally {
+      setChatStreaming(false);
+      setChatStreamText("");
+    }
   };
 
   const handleCopy = async () => {
@@ -707,9 +819,12 @@ export default function Home() {
             </div>
           </section>
 
-          <section className={styles.workspace}>
-            <div className={styles.inputHeader}>
-              <div>
+          <section
+            className={`${styles.workspace} ${chatOpen && hasResult ? styles.workspaceWithChat : ""}`}
+          >
+            <div className={styles.workspaceMain}>
+              <div className={styles.inputHeader}>
+                <div>
                 <h2>Your input</h2>
                 <p>Ideal for abstracts, notes, or research summaries.</p>
                 <p className={styles.modelHint}>
@@ -1092,6 +1207,15 @@ export default function Home() {
               </div>
             )}
 
+            {hasResult && (
+              <button
+                className={styles.chatToggleButton}
+                onClick={handleChatToggle}
+              >
+                {chatOpen ? "Close Chat" : "Chat with AI"}
+              </button>
+            )}
+
             {history.length > 0 && (
               <div className={styles.history}>
                 <div className={styles.historyHeader}>
@@ -1145,6 +1269,20 @@ export default function Home() {
                   ))}
                 </div>
               </div>
+            )}
+            </div>
+
+            {hasResult && chatOpen && (
+              <ChatPanel
+                isOpen={chatOpen}
+                onToggle={handleChatToggle}
+                messages={chatMessages}
+                onSend={handleChatSend}
+                streaming={chatStreaming}
+                streamingText={chatStreamText}
+                remainingQuota={chatQuota}
+                isPro={isPro}
+              />
             )}
           </section>
 
