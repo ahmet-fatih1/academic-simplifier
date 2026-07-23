@@ -5,6 +5,7 @@ import { jsPDF } from "jspdf";
 import styles from "../styles/Home.module.css";
 import Head from "next/head";
 import personas from "../lib/personas";
+import { extractTextFromPdf } from "../lib/pdf-parser";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -45,6 +46,9 @@ export default function Home() {
   const [proEmail, setProEmail] = useState("");
   const [proStatus, setProStatus] = useState(null);
   const [proLoading, setProLoading] = useState(false);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfFileName, setPdfFileName] = useState("");
+  const [pdfError, setPdfError] = useState("");
   const abortRef = useRef(null);
 
   useEffect(() => {
@@ -305,6 +309,22 @@ export default function Home() {
     setSummaryError("");
     setMeaningCheck(null);
     setMeaningError("");
+    setPdfFileName("");
+    setPdfError("");
+  };
+
+  const handlePdfUpload = async (file) => {
+    setPdfError("");
+    setPdfLoading(true);
+    try {
+      const extracted = await extractTextFromPdf(file);
+      setText(extracted);
+      setPdfFileName(file.name);
+    } catch (err) {
+      setPdfError(err.message || "Failed to read PDF.");
+    } finally {
+      setPdfLoading(false);
+    }
   };
 
   const handleCopy = async () => {
