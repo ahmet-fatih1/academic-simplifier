@@ -17,10 +17,18 @@ export default function ChatPanel({
   const messagesEndRef = useRef(null);
   const chatInputRef = useRef(null);
 
+  const rafRef = useRef(null);
+
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      if (messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    });
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, [messages, streamingText]);
 
   const handleSend = () => {

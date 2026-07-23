@@ -1,21 +1,6 @@
 import { ensureSchema, query } from "../../lib/db";
 import { getPersonaById } from "../../lib/personas";
-
-const isProStatus = (status, cancelled) => {
-  if (cancelled) return false;
-  return status === "active" || status === "on_trial" || status === "trialing";
-};
-
-const getClientIdentity = (req, email) => {
-  if (email) return `email:${email}`;
-  const forwarded = req.headers["x-forwarded-for"];
-  const ip = Array.isArray(forwarded)
-    ? forwarded[0]
-    : typeof forwarded === "string"
-      ? forwarded.split(",")[0].trim()
-      : req.socket?.remoteAddress || "unknown";
-  return `ip:${ip}`;
-};
+import { isProStatus, getClientIdentity } from "../../lib/api-helpers";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

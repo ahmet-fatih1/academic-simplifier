@@ -1,9 +1,5 @@
 import { ensureSchema, query } from "../../lib/db";
-
-const isProStatus = (status, cancelled) => {
-  if (cancelled) return false;
-  return status === "active" || status === "on_trial" || status === "trialing";
-};
+import { isProStatus } from "../../lib/api-helpers";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {

@@ -1,7 +1,6 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Analytics } from "@vercel/analytics/next";
 import { Fraunces, Manrope } from "next/font/google";
-import { jsPDF } from "jspdf";
 import styles from "../styles/Home.module.css";
 import Head from "next/head";
 import personas from "../lib/personas";
@@ -60,6 +59,9 @@ export default function Home() {
   const [chatQuota, setChatQuota] = useState(10);
   const [darkMode, setDarkMode] = useState(false);
   const abortRef = useRef(null);
+  const chatAbortRef = useRef(null);
+  const handleSimplifyRef = useRef(null);
+  const handleClearRef = useRef(null);
   const pdfInputRef = useRef(null);
   const textareaRef = useRef(null);
 
@@ -118,7 +120,10 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("simplify_history", JSON.stringify(history));
+    const timer = setTimeout(() => {
+      localStorage.setItem("simplify_history", JSON.stringify(history));
+    }, 500);
+    return () => clearTimeout(timer);
   }, [history]);
 
   useEffect(() => {
@@ -134,11 +139,17 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("chat_messages", JSON.stringify(chatMessages));
+    const timer = setTimeout(() => {
+      localStorage.setItem("chat_messages", JSON.stringify(chatMessages));
+    }, 500);
+    return () => clearTimeout(timer);
   }, [chatMessages]);
 
   useEffect(() => {
-    localStorage.setItem("chat_quota", JSON.stringify(chatQuota));
+    const timer = setTimeout(() => {
+      localStorage.setItem("chat_quota", JSON.stringify(chatQuota));
+    }, 500);
+    return () => clearTimeout(timer);
   }, [chatQuota]);
 
   useEffect(() => {
@@ -166,16 +177,16 @@ export default function Home() {
     const onKeyDown = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
         event.preventDefault();
-        handleSimplify();
+        handleSimplifyRef.current?.();
       }
       if (event.key === "Escape") {
         event.preventDefault();
-        handleClear();
+        handleClearRef.current?.();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [text, useCount]);
+  }, []);
 
   const textStats = useMemo(() => {
     const trimmed = text.trim();
@@ -264,10 +275,7 @@ export default function Home() {
           personaId: selectedPersona,
           reductionTarget: isPro ? reductionTarget : undefined,
           email: proEmail || undefined,
-          terms: protectedTerms
-            .split(",")
-            .map((item) => item.trim())
-            .filter(Boolean),
+          terms: protectedTermList,
         }),
         signal: controller.signal,
       });
@@ -424,6 +432,10 @@ export default function Home() {
     setChatStreaming(true);
     setChatStreamText("");
 
+    if (chatAbortRef.current) chatAbortRef.current.abort();
+    const controller = new AbortController();
+    chatAbortRef.current = controller;
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
@@ -438,6 +450,7 @@ export default function Home() {
           personaId: selectedPersona,
           email: proEmail,
         }),
+        signal: controller.signal,
       });
 
       if (!res.ok) {
@@ -474,10 +487,12 @@ export default function Home() {
       setChatMessages((prev) => [...prev, { role: "model", content: fullText }]);
       if (!isPro) setChatQuota((q) => Math.max(0, q - 1));
     } catch (err) {
-      setChatMessages((prev) => [
-        ...prev,
-        { role: "model", content: t.chat.error(err.message) },
-      ]);
+      if (err.name !== "AbortError") {
+        setChatMessages((prev) => [
+          ...prev,
+          { role: "model", content: t.chat.error(err.message) },
+        ]);
+      }
     } finally {
       setChatStreaming(false);
       setChatStreamText("");
@@ -505,7 +520,7 @@ export default function Home() {
     }
   };
 
-  const handleDownload = (format) => {
+  const handleDownload = async (format) => {
     if (!result) return;
     if (format === "txt") {
       const blob = new Blob([result], { type: "text/plain" });
@@ -520,6 +535,7 @@ export default function Home() {
       return;
     }
 
+    const { jsPDF } = await import("jspdf");
     const doc = new jsPDF({ unit: "pt", format: "a4" });
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
@@ -665,6 +681,9 @@ export default function Home() {
   };
 
   const hasResult = Boolean(result);
+
+  handleSimplifyRef.current = handleSimplify;
+  handleClearRef.current = handleClear;
 
   return (
     <>

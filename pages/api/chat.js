@@ -1,26 +1,11 @@
 import { ensureSchema, query } from "../../lib/db";
 import { buildChatSystemPrompt } from "../../lib/chat-prompt";
+import { isProStatus, getClientIdentity } from "../../lib/api-helpers";
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_MESSAGES = 50;
-const MAX_CONTEXT_CHARS = 20000;
+const MAX_CONTEXT_CHARS = 8000;
 const CHAT_LIMIT_PER_DAY = 10;
-
-const isProStatus = (status, cancelled) => {
-  if (cancelled) return false;
-  return status === "active" || status === "on_trial" || status === "trialing";
-};
-
-const getClientIdentity = (req, email) => {
-  if (email) return `chat:email:${email}`;
-  const forwarded = req.headers["x-forwarded-for"];
-  const ip = Array.isArray(forwarded)
-    ? forwarded[0]
-    : typeof forwarded === "string"
-      ? forwarded.split(",")[0].trim()
-      : req.socket?.remoteAddress || "unknown";
-  return `chat:ip:${ip}`;
-};
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -91,7 +76,7 @@ export default async function handler(req, res) {
     }
 
     if (!isPro) {
-      const identity = getClientIdentity(req, normalizedEmail);
+      const identity = getClientIdentity(req, normalizedEmail, "chat:");
       const today = new Date().toISOString().slice(0, 10);
       const { rows } = await query(
         `
