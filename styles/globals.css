@@ -1,6 +1,13 @@
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1f25;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1c2126;
+    --foreground: #e4e6e8;
+  }
 }
 
 html,
@@ -42,12 +49,12 @@ a {
 .errorBoundary h2 {
   font-size: 24px;
   font-weight: 700;
-  color: #273035;
+  color: var(--foreground);
 }
 
 .errorBoundary p {
   font-size: 16px;
-  color: #6a6a6a;
+  color: var(--muted, #5f6b73);
   max-width: 400px;
 }
 
@@ -55,16 +62,16 @@ a {
   padding: 10px 24px;
   border-radius: 12px;
   border: none;
-  background: #1a1a1a;
-  color: #fff;
+  background: var(--foreground);
+  color: var(--background);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: opacity 0.2s;
 }
 
 .errorBoundaryBtn:hover {
-  background: #333;
+  opacity: 0.85;
 }
 
 .errorBoundaryBtn:focus-visible {

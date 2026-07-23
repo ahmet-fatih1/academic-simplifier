@@ -7,6 +7,7 @@ import Head from "next/head";
 import personas from "../lib/personas";
 import { extractTextFromPdf } from "../lib/pdf-parser";
 import ChatPanel from "../components/ChatPanel";
+import { useLanguage } from "../lib/LanguageContext";
 
 const display = Fraunces({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ const SAMPLE_TEXT =
   "Academic discourse often relies on dense terminology, which can make important ideas hard to access for non-specialists. This tool rewrites such text in clear, everyday English without changing the meaning.";
 
 export default function Home() {
+  const { lang, toggleLanguage, t } = useLanguage();
   const [text, setText] = useState("");
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -56,6 +58,7 @@ export default function Home() {
   const [chatStreaming, setChatStreaming] = useState(false);
   const [chatStreamText, setChatStreamText] = useState("");
   const [chatQuota, setChatQuota] = useState(10);
+  const [darkMode, setDarkMode] = useState(false);
   const abortRef = useRef(null);
   const pdfInputRef = useRef(null);
 
@@ -70,6 +73,13 @@ export default function Home() {
       setProEmail(savedEmail);
     }
 
+    const savedDark = localStorage.getItem("dark_mode");
+    if (savedDark !== null) {
+      setDarkMode(savedDark === "true");
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      setDarkMode(true);
+    }
+
     const params = new URLSearchParams(window.location.search);
     if (params.get("pro") === "1") {
       localStorage.setItem("is_pro", "true");
@@ -82,6 +92,12 @@ export default function Home() {
       localStorage.setItem("pro_email", emailParam);
     }
   }, []);
+
+  const toggleDarkMode = () => {
+    const next = !darkMode;
+    setDarkMode(next);
+    localStorage.setItem("dark_mode", String(next));
+  };
 
   useEffect(() => {
     if (!proEmail) return;
@@ -210,12 +226,12 @@ export default function Home() {
 
   const handleSimplify = async () => {
     if (!isPro && useCount >= 3) {
-      setError("Free limit reached. Upgrade to Pro for unlimited use.");
+      setError(t.errors.freeLimit);
       return;
     }
 
     if (!text.trim()) {
-      setError("Please paste or type a text first.");
+      setError(t.errors.emptyText);
       return;
     }
 
@@ -260,7 +276,7 @@ export default function Home() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Something went wrong");
+        throw new Error(data.error || t.errors.generic);
       }
 
       setResult(data.result);
@@ -301,7 +317,7 @@ export default function Home() {
 
         const summaryData = await summaryRes.json();
         if (!summaryRes.ok) {
-          throw new Error(summaryData.error || "Summary failed");
+          throw new Error(summaryData.error || t.errors.summaryFailed);
         }
 
         const bundle = summaryData.result || {};
@@ -353,7 +369,7 @@ export default function Home() {
       setText(extracted);
       setPdfFileName(file.name);
     } catch (err) {
-      setPdfError(err.message || "Failed to read PDF.");
+      setPdfError(err.message || t.errors.pdfFailed);
     } finally {
       setPdfLoading(false);
     }
@@ -393,8 +409,7 @@ export default function Home() {
       setChatMessages([
         {
           role: "model",
-          content:
-            "Merhaba! Metniniz hakkında sorularınızı sorabilirsiniz. Ne bilmek istersiniz?",
+          content: t.chat.welcome,
         },
       ]);
     }
@@ -429,7 +444,7 @@ export default function Home() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(errData.error || "Chat request failed");
+        throw new Error(errData.error || t.errors.chatFailed);
       }
 
       const reader = res.body.getReader();
@@ -463,7 +478,7 @@ export default function Home() {
     } catch (err) {
       setChatMessages((prev) => [
         ...prev,
-        { role: "model", content: `Hata: ${err.message}` },
+        { role: "model", content: t.chat.error(err.message) },
       ]);
     } finally {
       setChatStreaming(false);
@@ -627,7 +642,7 @@ export default function Home() {
         body: JSON.stringify({ email: proEmail }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Pro check failed");
+      if (!res.ok) throw new Error(data.error || t.errors.proFailed);
       setProStatus(data);
       if (data.isPro) {
         setIsPro(true);
@@ -719,7 +734,7 @@ export default function Home() {
           }}
         />
       </Head>
-      <div className={`${styles.page} ${display.variable} ${body.variable}`}>
+      <div className={`${styles.page} ${display.variable} ${body.variable} ${darkMode ? styles.darkMode : ""}`}>
         <main className={styles.main}>
           <header className={styles.header}>
             <div className={styles.brand}>
@@ -743,47 +758,58 @@ export default function Home() {
                 <p className={styles.brandTag}>B1 English in seconds</p>
               </div>
             </div>
-            <a
-              className={styles.proButton}
-              href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Upgrade to Pro
-            </a>
+            <div className={styles.headerActions}>
+              <button
+                className={styles.darkModeToggle}
+                onClick={toggleLanguage}
+                aria-label={lang === "tr" ? "Switch to English" : "Türkçe'ye geç"}
+              >
+                {lang === "tr" ? "EN" : "TR"}
+              </button>
+              <button
+                className={styles.darkModeToggle}
+                onClick={toggleDarkMode}
+                aria-label={darkMode ? t.header.darkMode : t.header.lightMode}
+              >
+                {darkMode ? "☀️" : "🌙"}
+              </button>
+              <a
+                className={styles.proButton}
+                href="https://cloudtools-pro.lemonsqueezy.com/checkout/buy/eb93c2ce-bf52-44f0-97ad-2100c2a956b1"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {t.header.upgrade}
+              </a>
+            </div>
           </header>
 
           <div className={styles.disclosureBar}>
-            <span>Quality checks enabled</span>
-            <span>Consistency-focused results</span>
+            <span>{t.disclosure.quality}</span>
+            <span>{t.disclosure.consistency}</span>
           </div>
 
           <section className={styles.hero}>
             <div>
-              <h1>Turn complex academic text into clear, readable English.</h1>
-              <p>
-                Fast, focused, and designed for comprehension. Paste your text,
-                hit simplify, and share a clean B1 version immediately.
-              </p>
+              <h1>{t.hero.title}</h1>
+              <p>{t.hero.description}</p>
               <div className={styles.heroActions}>
                 <button
                   className={styles.primaryButton}
                   onClick={handleSimplify}
                   disabled={loading || (!isPro && useCount >= 3) || !text.trim()}
                 >
-                  {loading ? "Simplifying..." : "Simplify Now"}
+                  {loading ? t.hero.ctaLoading : t.hero.cta}
                 </button>
                 <button className={styles.ghostButton} onClick={handleSample}>
-                  Use a sample
+                  {t.hero.sample}
                 </button>
               </div>
               <div className={styles.usageCard}>
                 <div>
-                  <p className={styles.usageTitle}>Free usage</p>
+                  <p className={styles.usageTitle}>{t.usage.title}</p>
                   <p className={styles.usageValue}>
-                    {isPro
-                      ? "Unlimited (Pro)"
-                      : `${remaining} of 3 simplifications left today`}
+                    {isPro ? t.usage.unlimited : t.usage.remaining(remaining)}
                   </p>
                 </div>
                 <div className={styles.usageBar}>
@@ -798,40 +824,74 @@ export default function Home() {
               <div className={styles.flowStep}>
                 <span>1</span>
                 <div>
-                  <h3>Paste or type</h3>
-                  <p>Add your academic paragraph, abstract, or notes.</p>
+                  <h3>{t.flow.step1Title}</h3>
+                  <p>{t.flow.step1Desc}</p>
                 </div>
               </div>
               <div className={styles.flowStep}>
                 <span>2</span>
                 <div>
-                  <h3>Simplify instantly</h3>
-                  <p>We rewrite to B1 English while keeping meaning intact.</p>
+                  <h3>{t.flow.step2Title}</h3>
+                  <p>{t.flow.step2Desc}</p>
                 </div>
               </div>
               <div className={styles.flowStep}>
                 <span>3</span>
                 <div>
-                  <h3>Copy & share</h3>
-                  <p>Export clean text for students, teams, or readers.</p>
+                  <h3>{t.flow.step3Title}</h3>
+                  <p>{t.flow.step3Desc}</p>
                 </div>
               </div>
+            </div>
+          </section>
+
+          <section className={styles.featuresGrid}>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>PDF</div>
+              <h3>{t.features.pdf.title}</h3>
+              <p>{t.features.pdf.desc}</p>
+            </div>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>5</div>
+              <h3>{t.features.personas.title}</h3>
+              <p>{t.features.personas.desc}</p>
+            </div>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>AI</div>
+              <h3>{t.features.chat.title}</h3>
+              <p>{t.features.chat.desc}</p>
+            </div>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>+</div>
+              <h3>{t.features.terms.title}</h3>
+              <p>{t.features.terms.desc}</p>
+            </div>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>%</div>
+              <h3>{t.features.reduction.title}</h3>
+              <p>{t.features.reduction.desc}</p>
+            </div>
+            <div className={styles.featureCard}>
+              <div className={styles.featureIcon}>DL</div>
+              <h3>{t.features.export.title}</h3>
+              <p>{t.features.export.desc}</p>
             </div>
           </section>
 
           <section
             className={`${styles.workspace} ${chatOpen && hasResult ? styles.workspaceWithChat : ""}`}
           >
-            <div className={styles.workspaceMain}>
+            <div className={`${styles.workspaceMain} ${hasResult ? styles.workspaceSplit : ""}`}>
+              <div className={styles.inputPanel}>
               <div className={styles.inputHeader}>
                 <div>
-                <h2>Your input</h2>
-                <p>Ideal for abstracts, notes, or research summaries.</p>
+                <h2>{t.input.title}</h2>
+                <p>{t.input.subtitle}</p>
                 <p className={styles.modelHint}>
-                  Fast = quickest response. Quality = more accurate rewrite.
+                  {t.input.modelHint}
                 </p>
                 <p className={styles.modelHint}>
-                  {personas.find((p) => p.id === selectedPersona)?.description}
+                  {personas.find((p) => p.id === selectedPersona)?.description[lang]}
                 </p>
               </div>
               <div className={styles.inputActions}>
@@ -840,8 +900,8 @@ export default function Home() {
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
                 >
-                  <option value="fast">Fast model</option>
-                  <option value="quality">Quality model</option>
+                  <option value="fast">{t.input.fastModel}</option>
+                  <option value="quality">{t.input.qualityModel}</option>
                 </select>
                 <select
                   className={styles.modelSelect}
@@ -850,29 +910,29 @@ export default function Home() {
                 >
                   {personas.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.label}
+                      {p.label[lang]}
                     </option>
                   ))}
                 </select>
                 <button className={styles.secondaryButton} onClick={handleClear}>
-                  Clear
+                  {t.input.clear}
                 </button>
                 <button className={styles.secondaryButton} onClick={handleSample}>
-                  Paste sample
+                  {t.input.pasteSample}
                 </button>
               </div>
             </div>
 
             <div className={styles.protectedTerms}>
-              <label htmlFor="protectedTerms">Korunacak terimler</label>
+              <label htmlFor="protectedTerms">{t.settings.protectedTerms}</label>
               <input
                 id="protectedTerms"
                 className={styles.protectedInput}
-                placeholder="Örn: GDP, HIV, CRISPR (virgülle ayır)"
+                placeholder={t.settings.protectedPlaceholder}
                 value={protectedTerms}
                 onChange={(e) => setProtectedTerms(e.target.value)}
               />
-              <p>Bu terimler sadeleştirme sırasında aynen korunur.</p>
+              <p>{t.settings.protectedHelp}</p>
               {protectedTermList.length > 0 && (
                 <div className={styles.termPills}>
                   {protectedTermList.map((term) => (
@@ -885,7 +945,7 @@ export default function Home() {
             </div>
 
             <div className={styles.protectedTerms}>
-              <label htmlFor="reductionTarget">Reduction hedefi</label>
+              <label htmlFor="reductionTarget">{t.settings.reductionTarget}</label>
               <div className={styles.reductionRow}>
                 <input
                   id="reductionTarget"
@@ -899,12 +959,10 @@ export default function Home() {
                 />
                 <span className={styles.reductionValue}>{reductionTarget}%</span>
                 {!isPro && (
-                  <span className={styles.badgeMuted}>Pro</span>
+                  <span className={styles.badgeMuted}>{t.settings.protectedBadge}</span>
                 )}
               </div>
-              <p>
-                Çıktının ne kadar sadeleşeceğini hedefle. Pro’da aktif.
-              </p>
+              <p>{t.settings.reductionHelp}</p>
               {!isPro && (
                 <a
                   className={styles.proLink}
@@ -912,19 +970,19 @@ export default function Home() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Pro ile reduction ayarı aç
+                  {t.settings.reductionLink}
                 </a>
               )}
             </div>
 
             <div className={styles.protectedTerms}>
-              <label htmlFor="proEmail">Pro durumunu kontrol et</label>
+              <label htmlFor="proEmail">{t.settings.proCheck}</label>
               <div className={styles.reductionRow}>
                 <input
                   id="proEmail"
                   type="email"
                   className={styles.protectedInput}
-                  placeholder="Ödeme e-postan"
+                  placeholder={t.settings.proEmail}
                   value={proEmail}
                   onChange={(e) => setProEmail(e.target.value)}
                 />
@@ -933,10 +991,10 @@ export default function Home() {
                   onClick={handleProCheck}
                   disabled={proLoading || !proEmail}
                 >
-                  {proLoading ? "Checking..." : "Check"}
+                  {proLoading ? t.settings.checking : t.settings.check}
                 </button>
               </div>
-              {proStatus?.isPro && <p>Pro aktif görünüyor.</p>}
+              {proStatus?.isPro && <p>{t.settings.proActive}</p>}
               {proStatus?.error && (
                 <p className={styles.summaryError}>{proStatus.error}</p>
               )}
@@ -962,7 +1020,7 @@ export default function Home() {
                   onClick={() => pdfInputRef.current?.click()}
                   disabled={pdfLoading || loading}
                 >
-                  {pdfLoading ? "Reading..." : "Upload PDF"}
+                  {pdfLoading ? t.pdf.reading : t.pdf.upload}
                 </button>
 
                 {pdfFileName && (
@@ -972,7 +1030,7 @@ export default function Home() {
                       className={styles.pdfBadgeRemove}
                       onClick={handlePdfRemove}
                     >
-                      x
+                      {t.pdf.remove}
                     </button>
                   </span>
                 )}
@@ -987,16 +1045,16 @@ export default function Home() {
 
             <textarea
               className={styles.textarea}
-              placeholder="Paste academic text here, or upload a PDF above..."
+              placeholder={t.input.textareaPlaceholder}
               value={text}
               onChange={(e) => setText(e.target.value)}
               disabled={loading || (!isPro && useCount >= 3)}
             />
 
             <div className={styles.inputMeta}>
-              <span>{textStats.words} words</span>
-              <span>{textStats.chars} characters</span>
-              {latencyMs !== null && <span>{latencyMs} ms</span>}
+              <span>{t.input.words(textStats.words)}</span>
+              <span>{t.input.chars(textStats.chars)}</span>
+              {latencyMs !== null && <span>{t.input.latency(latencyMs)}</span>}
             </div>
 
             <div className={styles.submitRow}>
@@ -1005,7 +1063,7 @@ export default function Home() {
                 onClick={handleSimplify}
                 disabled={loading || (!isPro && useCount >= 3) || !text.trim()}
               >
-                {loading ? "Simplifying..." : "Simplify"}
+                {loading ? t.submit.simplifying : t.submit.simplify}
               </button>
               <label className={styles.compareToggle}>
                 <input
@@ -1013,30 +1071,34 @@ export default function Home() {
                   checked={showCompare}
                   onChange={(e) => setShowCompare(e.target.checked)}
                 />
-                Compare view
+                {t.submit.compareView}
               </label>
               <div className={styles.submitHint}>
                 {!isPro && useCount >= 3 ? (
-                  <span>Upgrade to continue without limits.</span>
+                  <span>{t.submit.limitHint}</span>
                 ) : (
-                  <span>Keep it short for the fastest response.</span>
+                  <span>{t.submit.usageHint}</span>
                 )}
               </div>
             </div>
 
             <div className={styles.shortcutHint}>
-              <span>`Ctrl + Enter` to simplify</span>
-              <span>`Esc` to clear</span>
+              <span>{t.submit.shortcutSimplify}</span>
+              <span>{t.submit.shortcutClear}</span>
             </div>
 
             {error && <div className={styles.error}>{error}</div>}
+            </div>
+
+            {hasResult && (
+              <div className={styles.outputPanel}>
 
             {hasResult && showCompare && (
               <div className={styles.compareGrid}>
                 <div className={styles.compareCard}>
                   <div className={styles.resultHeader}>
-                    <h3>Original</h3>
-                    <span className={styles.badgeMuted}>Input</span>
+                    <h3>{t.output.original}</h3>
+                    <span className={styles.badgeMuted}>{t.output.inputBadge}</span>
                   </div>
                   <p>{text.trim()}</p>
                   <div className={styles.resultActions}>
@@ -1044,22 +1106,22 @@ export default function Home() {
                       className={styles.secondaryButton}
                       onClick={handleCopyOriginal}
                     >
-                      Copy original
+                      {t.output.copyOriginal}
                     </button>
                   </div>
                 </div>
                 <div className={styles.compareCard}>
                   <div className={styles.resultHeader}>
-                    <h3>Simplified</h3>
+                    <h3>{t.output.simplified}</h3>
                     <button
                       className={styles.secondaryButton}
                       onClick={handleCopy}
                     >
                       {copyStatus === "copied"
-                        ? "Copied"
+                        ? t.output.copied
                         : copyStatus === "failed"
-                          ? "Copy failed"
-                          : "Copy"}
+                          ? t.output.copyFailed
+                          : t.output.copy}
                     </button>
                   </div>
                   <p>{result}</p>
@@ -1068,16 +1130,16 @@ export default function Home() {
                       className={styles.secondaryButton}
                       onClick={() => handleDownload("txt")}
                     >
-                      Download TXT
+                      {t.output.downloadTxt}
                     </button>
                     <button
                       className={styles.secondaryButton}
                       onClick={() => handleDownload("pdf")}
                     >
-                      Download PDF
+                      {t.output.downloadPdf}
                     </button>
                     <button className={styles.secondaryButton} onClick={handleShare}>
-                      Share
+                      {t.output.share}
                     </button>
                   </div>
                 </div>
@@ -1087,13 +1149,13 @@ export default function Home() {
             {hasResult && !showCompare && (
               <div className={styles.resultCard}>
                 <div className={styles.resultHeader}>
-                  <h3>Simplified result</h3>
+                  <h3>{t.output.resultTitle}</h3>
                   <button className={styles.secondaryButton} onClick={handleCopy}>
                     {copyStatus === "copied"
-                      ? "Copied"
+                      ? t.output.copied
                       : copyStatus === "failed"
-                        ? "Copy failed"
-                        : "Copy"}
+                        ? t.output.copyFailed
+                        : t.output.copy}
                   </button>
                 </div>
                 <p>{result}</p>
@@ -1102,16 +1164,16 @@ export default function Home() {
                     className={styles.secondaryButton}
                     onClick={() => handleDownload("txt")}
                   >
-                    Download TXT
+                    {t.output.downloadTxt}
                   </button>
                   <button
                     className={styles.secondaryButton}
                     onClick={() => handleDownload("pdf")}
                   >
-                    Download PDF
+                    {t.output.downloadPdf}
                   </button>
                   <button className={styles.secondaryButton} onClick={handleShare}>
-                    Share
+                    {t.output.share}
                   </button>
                 </div>
               </div>
@@ -1120,15 +1182,15 @@ export default function Home() {
             {hasResult && (
               <div className={styles.statsRow}>
                 <div className={styles.statCard}>
-                  <p>Output words</p>
+                  <p>{t.output.outputWords}</p>
                   <strong>{outputStats.words}</strong>
                 </div>
                 <div className={styles.statCard}>
-                  <p>Estimated reading</p>
-                  <strong>{outputStats.minutes} min</strong>
+                  <p>{t.output.estimatedReading}</p>
+                  <strong>{t.output.min(outputStats.minutes)}</strong>
                 </div>
                 <div className={styles.statCard}>
-                  <p>Reduction</p>
+                  <p>{t.output.reduction}</p>
                   <strong>{reductionPct}%</strong>
                 </div>
               </div>
@@ -1137,10 +1199,10 @@ export default function Home() {
             {hasResult && (
               <div className={styles.summaryCard}>
                 <div className={styles.resultHeader}>
-                  <h3>Visual summary</h3>
-                  <span className={styles.badgeMuted}>3-5 bullets</span>
+                  <h3>{t.summary.title}</h3>
+                  <span className={styles.badgeMuted}>{t.summary.badge}</span>
                 </div>
-                {summaryLoading && <p>Generating summary...</p>}
+                {summaryLoading && <p>{t.summary.generating}</p>}
                 {summaryError && (
                   <p className={styles.summaryError}>{summaryError}</p>
                 )}
@@ -1157,10 +1219,10 @@ export default function Home() {
             {hasResult && (
               <div className={styles.summaryCard}>
                 <div className={styles.resultHeader}>
-                  <h3>Meaning check</h3>
-                  <span className={styles.badgeMuted}>Auto</span>
+                  <h3>{t.meaning.title}</h3>
+                  <span className={styles.badgeMuted}>{t.meaning.badge}</span>
                 </div>
-                {meaningLoading && <p>Checking meaning...</p>}
+                {meaningLoading && <p>{t.meaning.checking}</p>}
                 {meaningError && (
                   <p className={styles.summaryError}>{meaningError}</p>
                 )}
@@ -1168,23 +1230,22 @@ export default function Home() {
                   <>
                     {meaningCheck.risk === "high" && (
                       <div className={styles.riskWarning}>
-                        Meaning drift risk detected. Try Quality mode for a safer
-                        rewrite.
+                        {t.meaning.riskWarning}
                         <button
                           className={styles.secondaryButton}
                           onClick={handleQualityRetry}
                         >
-                          Re-run with Quality
+                          {t.meaning.rerun}
                         </button>
                       </div>
                     )}
                     <div className={styles.meaningGrid}>
                       <div>
-                        <p>Match</p>
-                        <strong>{meaningCheck.match ? "Yes" : "No"}</strong>
+                        <p>{t.meaning.match}</p>
+                        <strong>{meaningCheck.match ? t.meaning.yes : t.meaning.no}</strong>
                       </div>
                       <div>
-                        <p>Risk</p>
+                        <p>{t.meaning.risk}</p>
                         <strong
                           className={
                             meaningCheck.risk === "high"
@@ -1198,7 +1259,7 @@ export default function Home() {
                         </strong>
                       </div>
                       <div>
-                        <p>Notes</p>
+                        <p>{t.meaning.notes}</p>
                         <strong>{meaningCheck.notes}</strong>
                       </div>
                     </div>
@@ -1212,19 +1273,21 @@ export default function Home() {
                 className={styles.chatToggleButton}
                 onClick={handleChatToggle}
               >
-                {chatOpen ? "Close Chat" : "Chat with AI"}
+                {chatOpen ? t.chat.toggleClose : t.chat.toggleOpen}
               </button>
+            )}
+            </div>
             )}
 
             {history.length > 0 && (
               <div className={styles.history}>
                 <div className={styles.historyHeader}>
-                  <h3>Recent results</h3>
+                  <h3>{t.history.title}</h3>
                   <button
                     className={styles.secondaryButton}
                     onClick={handleHistoryClear}
                   >
-                    Clear history
+                    {t.history.clear}
                   </button>
                 </div>
                 <div className={styles.historyList}>
@@ -1244,25 +1307,25 @@ export default function Home() {
                           className={styles.secondaryButton}
                           onClick={() => handleHistorySelect(entry)}
                         >
-                          Use
+                          {t.history.use}
                         </button>
                         <button
                           className={styles.secondaryButton}
                           onClick={() => handleHistoryPin(entry.id)}
                         >
-                          {entry.pinned ? "Unpin" : "Pin"}
+                          {entry.pinned ? t.history.unpin : t.history.pin}
                         </button>
                         <button
                           className={styles.secondaryButton}
                           onClick={() => handleHistoryRerun(entry)}
                         >
-                          Re-run
+                          {t.history.rerun}
                         </button>
                         <button
                           className={styles.secondaryButton}
                           onClick={() => handleHistoryDelete(entry.id)}
                         >
-                          Delete
+                          {t.history.delete}
                         </button>
                       </div>
                     </div>
@@ -1282,15 +1345,16 @@ export default function Home() {
                 streamingText={chatStreamText}
                 remainingQuota={chatQuota}
                 isPro={isPro}
+                t={t.chat}
               />
             )}
           </section>
 
           <section className={styles.proSection}>
             <div>
-              <h2>Go Pro for unlimited simplifications</h2>
-              <p>$4.99/month · 7-day free trial · Cancel anytime</p>
-              <p>Pro ile: Reduction hedefi (çıktı kısalma oranı) ayarı</p>
+              <h2>{t.pro.title}</h2>
+              <p>{t.pro.price}</p>
+              <p>{t.pro.feature}</p>
             </div>
             <a
               className={styles.primaryButton}
@@ -1298,7 +1362,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Start free trial
+              {t.pro.cta}
             </a>
           </section>
         </main>

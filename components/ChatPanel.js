@@ -12,6 +12,7 @@ export default function ChatPanel({
   streamingText,
   remainingQuota,
   isPro,
+  t,
 }) {
   const inputRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -43,11 +44,11 @@ export default function ChatPanel({
   return (
     <div className={styles.chatPanel}>
       <div className={styles.chatHeader}>
-        <span className={styles.chatTitle}>Chat with AI</span>
+        <span className={styles.chatTitle}>{t.panelTitle}</span>
         <button
           className={styles.chatCloseBtn}
           onClick={onToggle}
-          aria-label="Close chat"
+          aria-label={t.panelClose}
         >
           ✕
         </button>
@@ -56,7 +57,7 @@ export default function ChatPanel({
       <div className={styles.chatMessages}>
         {messages.length === 0 && !streaming && (
           <p className={styles.chatWelcome}>
-            Metniniz hakkında sorularınızı sorabilirsiniz.
+            {t.welcome}
           </p>
         )}
         {messages.map((msg, i) => (
@@ -82,7 +83,7 @@ export default function ChatPanel({
         <textarea
           ref={chatInputRef}
           className={styles.chatInput}
-          placeholder="Sorunuzu yazın..."
+          placeholder={t.placeholder}
           rows={1}
           onKeyDown={handleKeyDown}
           disabled={streaming}
@@ -94,13 +95,13 @@ export default function ChatPanel({
           onClick={handleSend}
           disabled={streaming}
         >
-          Send
+          {t.send}
         </button>
       </div>
 
       {!isPro && (
         <div className={styles.chatQuota}>
-          {remainingQuota}/10 mesaj kaldı
+          {t.quota(remainingQuota)}
         </div>
       )}
     </div>
