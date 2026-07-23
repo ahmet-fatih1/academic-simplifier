@@ -275,6 +275,7 @@
   background: #fff;
   font-weight: 600;
   cursor: pointer;
+  color-scheme: light;
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23556066' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
@@ -322,6 +323,7 @@
   line-height: 1.6;
   resize: vertical;
   transition: border-color 0.2s ease;
+  color-scheme: light;
 }
 
 .textarea:focus {
@@ -360,6 +362,7 @@
   border: 1.5px solid var(--border);
   font-size: 14px;
   transition: border-color 0.2s ease;
+  color-scheme: light;
 }
 
 .protectedInput:focus {
