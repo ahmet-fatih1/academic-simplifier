@@ -40,3 +40,42 @@ a {
     color-scheme: dark;
   }
 }
+
+.errorBoundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 40px 20px;
+  text-align: center;
+  gap: 16px;
+}
+
+.errorBoundary h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #273035;
+}
+
+.errorBoundary p {
+  font-size: 16px;
+  color: #6a6a6a;
+  max-width: 400px;
+}
+
+.errorBoundaryBtn {
+  padding: 10px 24px;
+  border-radius: 12px;
+  border: none;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.errorBoundaryBtn:hover {
+  background: #333;
+}

@@ -101,6 +101,21 @@ export default function Home() {
   }, [history]);
 
   useEffect(() => {
+    const handleError = (event) => {
+      console.error("Uncaught error:", event.error || event.message);
+    };
+    const handleRejection = (event) => {
+      console.error("Unhandled promise rejection:", event.reason);
+    };
+    window.addEventListener("error", handleError);
+    window.addEventListener("unhandledrejection", handleRejection);
+    return () => {
+      window.removeEventListener("error", handleError);
+      window.removeEventListener("unhandledrejection", handleRejection);
+    };
+  }, []);
+
+  useEffect(() => {
     const onKeyDown = (event) => {
       if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
         event.preventDefault();

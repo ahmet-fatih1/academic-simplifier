@@ -16,27 +16,32 @@ export default async function handler(req, res) {
   const normalizedEmail = email.trim().toLowerCase();
   const variantId = Number(process.env.LEMON_SQUEEZY_VARIANT_ID || 0);
 
-  await ensureSchema();
+  try {
+    await ensureSchema();
 
-  const { rows } = await query(
-    `
-      SELECT status, cancelled, last_event, last_event_at
-      FROM subscriptions
-      WHERE email = $1
-      ${variantId ? "AND variant_id = $2" : ""}
-      ORDER BY updated_at DESC NULLS LAST, last_event_at DESC
-      LIMIT 1
-    `,
-    variantId ? [normalizedEmail, variantId] : [normalizedEmail]
-  );
+    const { rows } = await query(
+      `
+        SELECT status, cancelled, last_event, last_event_at
+        FROM subscriptions
+        WHERE email = $1
+        ${variantId ? "AND variant_id = $2" : ""}
+        ORDER BY updated_at DESC NULLS LAST, last_event_at DESC
+        LIMIT 1
+      `,
+      variantId ? [normalizedEmail, variantId] : [normalizedEmail]
+    );
 
-  const record = rows[0] || null;
-  const isPro = record ? isProStatus(record.status, record.cancelled) : false;
+    const record = rows[0] || null;
+    const isPro = record ? isProStatus(record.status, record.cancelled) : false;
 
-  return res.status(200).json({
-    isPro,
-    status: record?.status || null,
-    lastEvent: record?.last_event || null,
-    lastEventAt: record?.last_event_at || null,
-  });
+    return res.status(200).json({
+      isPro,
+      status: record?.status || null,
+      lastEvent: record?.last_event || null,
+      lastEventAt: record?.last_event_at || null,
+    });
+  } catch (err) {
+    console.error("pro-status error:", err);
+    return res.status(500).json({ error: "Failed to check pro status" });
+  }
 }
