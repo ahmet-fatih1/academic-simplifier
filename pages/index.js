@@ -61,6 +61,7 @@ export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
   const abortRef = useRef(null);
   const pdfInputRef = useRef(null);
+  const textareaRef = useRef(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("is_pro");
@@ -801,8 +802,15 @@ export default function Home() {
               <div className={styles.heroActions}>
                 <button
                   className={styles.primaryButton}
-                  onClick={handleSimplify}
-                  disabled={loading || (!isPro && useCount >= 3) || !text.trim()}
+                  onClick={() => {
+                    if (text.trim()) {
+                      handleSimplify();
+                    } else {
+                      textareaRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+                      setTimeout(() => textareaRef.current?.focus(), 400);
+                    }
+                  }}
+                  disabled={loading || (!isPro && useCount >= 3)}
                 >
                   {loading ? t.hero.ctaLoading : t.hero.cta}
                 </button>
@@ -1043,6 +1051,7 @@ export default function Home() {
             </div>
 
             <textarea
+              ref={textareaRef}
               className={styles.textarea}
               placeholder={t.input.textareaPlaceholder}
               value={text}
@@ -1055,6 +1064,8 @@ export default function Home() {
               <span>{t.input.chars(textStats.chars)}</span>
               {latencyMs !== null && <span>{t.input.latency(latencyMs)}</span>}
             </div>
+
+            <p className={styles.privacyNote}>{t.input.privacyNote}</p>
 
             <div className={styles.submitRow}>
               <button

@@ -68,6 +68,7 @@
     --bg-gradient-start: #141820;
     --bg-gradient-end: #0f1318;
     --bg-radial: rgba(255, 126, 96, 0.06);
+    color-scheme: dark;
   }
 }
 
@@ -540,6 +541,7 @@
   border-radius: 999px;
   border: 1.5px solid var(--border);
   background: var(--surface);
+  color: var(--ink);
   font-weight: 600;
   cursor: pointer;
   color-scheme: inherit;
@@ -651,6 +653,7 @@
   border-radius: 16px;
   border: 1.5px solid var(--border);
   background: var(--surface);
+  color: var(--ink);
   font-size: 15px;
   line-height: 1.7;
   resize: vertical;
@@ -675,6 +678,13 @@
   font-size: 13px;
 }
 
+.privacyNote {
+  color: var(--muted-light);
+  font-size: 12px;
+  text-align: center;
+  padding: 4px 0;
+}
+
 .protectedTerms {
   display: grid;
   gap: 8px;
@@ -694,6 +704,7 @@
   border-radius: 12px;
   border: 1.5px solid var(--border);
   font-size: 14px;
+  color: var(--ink);
   transition: border-color 0.2s ease;
   color-scheme: inherit;
 }
@@ -1010,7 +1021,7 @@
 }
 
 .proSection {
-  background: var(--ink);
+  background: #1a1f25;
   color: #fff;
   border-radius: 16px;
   padding: 28px;
@@ -1024,6 +1035,16 @@
 .proSection p {
   color: rgba(255, 255, 255, 0.7);
   margin-top: 8px;
+}
+
+.proSection .primaryButton {
+  background: #fff;
+  color: #1a1f25;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.proSection .primaryButton:hover {
+  background: #f0f0f0;
 }
 
 @media (max-width: 600px) {
@@ -1190,9 +1211,9 @@
   min-height: 40px;
   max-height: 120px;
   line-height: 1.4;
+  color: var(--ink);
   color-scheme: inherit;
   background: var(--surface);
-  color: var(--ink);
 }
 
 .chatInput:focus {
