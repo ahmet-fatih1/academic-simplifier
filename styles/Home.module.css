@@ -1055,6 +1055,133 @@
   background: #f0f0f0;
 }
 
+.socialProof {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+  margin-top: -4px;
+  margin-bottom: 16px;
+}
+
+.demoCard {
+  margin-bottom: 28px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.demoBadge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-light);
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 14px;
+}
+
+.demoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.demoSide {
+  display: grid;
+  gap: 8px;
+}
+
+.demoLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.demoSide p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-heading);
+}
+
+.compareTable {
+  margin-bottom: 28px;
+  margin-top: 28px;
+}
+
+.compareTable h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink-heading);
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+.compareTableWrapper {
+  overflow-x: auto;
+}
+
+.compareTableWrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.compareTableWrapper th,
+.compareTableWrapper td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.compareTableWrapper th {
+  font-weight: 700;
+  color: var(--ink-heading);
+  background: var(--surface);
+}
+
+.compareTableWrapper td {
+  color: var(--ink);
+}
+
+.compareProCell {
+  color: var(--accent) !important;
+  font-weight: 600;
+}
+
+.siteFooter {
+  padding: 28px 0;
+  border-top: 1.5px solid var(--border);
+  text-align: center;
+  margin-top: 12px;
+}
+
+.footerTagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.footerLinks {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 13px;
+}
+
+.footerLinks a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footerLinks a:hover {
+  color: var(--accent);
+}
+
 @media (max-width: 600px) {
   .header {
     flex-direction: column;
@@ -1079,6 +1206,10 @@
 
   .proSection {
     align-items: flex-start;
+  }
+
+  .demoGrid {
+    grid-template-columns: 1fr;
   }
 
   .statsRow {

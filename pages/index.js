@@ -109,7 +109,7 @@ export default function Home() {
     handleProCheck();
   }, [proEmail]);
 
-  const remaining = Math.max(0, 3 - useCount);
+  const remaining = Math.max(0, 5 - useCount);
   useEffect(() => {
     const stored = localStorage.getItem("simplify_history");
     if (stored) {
@@ -236,7 +236,7 @@ export default function Home() {
   }, [protectedTerms]);
 
   const handleSimplify = async () => {
-    if (!isPro && useCount >= 3) {
+    if (!isPro && useCount >= 5) {
       setError(t.errors.freeLimit);
       return;
     }
@@ -803,6 +803,7 @@ export default function Home() {
             <div>
               <h1>{t.hero.title}</h1>
               <p>{t.hero.description}</p>
+              <p className={styles.socialProof}>{t.hero.socialProof}</p>
               <div className={styles.heroActions}>
                 <button
                   className={styles.primaryButton}
@@ -814,7 +815,7 @@ export default function Home() {
                       setTimeout(() => textareaRef.current?.focus(), 400);
                     }
                   }}
-                  disabled={loading || (!isPro && useCount >= 3)}
+                  disabled={loading || (!isPro && useCount >= 5)}
                 >
                   {loading ? t.hero.ctaLoading : t.hero.cta}
                 </button>
@@ -831,7 +832,7 @@ export default function Home() {
                 </div>
                 <div className={styles.usageBar}>
                   <span
-                    style={{ width: `${isPro ? 100 : (remaining / 3) * 100}%` }}
+                    style={{ width: `${isPro ? 100 : (remaining / 5) * 100}%` }}
                     aria-hidden="true"
                   />
                 </div>
@@ -861,6 +862,20 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          <div className={styles.demoCard}>
+            <span className={styles.demoBadge}>{t.demo.badge}</span>
+            <div className={styles.demoGrid}>
+              <div className={styles.demoSide}>
+                <span className={styles.demoLabel}>{t.demo.before}</span>
+                <p>{t.demo.input}</p>
+              </div>
+              <div className={styles.demoSide}>
+                <span className={styles.demoLabel}>{t.demo.after}</span>
+                <p>{t.demo.output}</p>
+              </div>
+            </div>
+          </div>
 
           <section className={styles.featuresGrid}>
             <div className={styles.featureCard}>
@@ -1060,7 +1075,7 @@ export default function Home() {
               placeholder={t.input.textareaPlaceholder}
               value={text}
               onChange={(e) => setText(e.target.value)}
-              disabled={loading || (!isPro && useCount >= 3)}
+              disabled={loading || (!isPro && useCount >= 5)}
             />
 
             <div className={styles.inputMeta}>
@@ -1075,7 +1090,7 @@ export default function Home() {
               <button
                 className={styles.primaryButton}
                 onClick={handleSimplify}
-                disabled={loading || (!isPro && useCount >= 3) || !text.trim()}
+                disabled={loading || (!isPro && useCount >= 5) || !text.trim()}
               >
                 {loading ? t.submit.simplifying : t.submit.simplify}
               </button>
@@ -1088,7 +1103,7 @@ export default function Home() {
                 {t.submit.compareView}
               </label>
               <div className={styles.submitHint}>
-                {!isPro && useCount >= 3 ? (
+                {!isPro && useCount >= 5 ? (
                   <span>{t.submit.limitHint}</span>
                 ) : (
                   <span>{t.submit.usageHint}</span>
@@ -1386,6 +1401,30 @@ export default function Home() {
             </>
           )}
 
+          <div className={styles.compareTable}>
+            <h2>{t.compare.title}</h2>
+            <div className={styles.compareTableWrapper}>
+              <table>
+                <thead>
+                  <tr>
+                    <th>{t.compare.headerFeature}</th>
+                    <th>{t.compare.headerFree}</th>
+                    <th>{t.compare.headerPro}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {t.compare.rows.map((row, i) => (
+                    <tr key={i}>
+                      <td>{row[0]}</td>
+                      <td>{row[1]}</td>
+                      <td className={row[2] === "—" ? "" : styles.compareProCell}>{row[2]}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <section className={styles.proSection}>
             <div>
               <h2>{t.pro.title}</h2>
@@ -1401,6 +1440,15 @@ export default function Home() {
               {t.pro.cta}
             </a>
           </section>
+
+          <footer className={styles.siteFooter}>
+            <p className={styles.footerTagline}>{t.footer.tagline}</p>
+            <div className={styles.footerLinks}>
+              <a href="/privacy">{t.footer.privacy}</a>
+              <a href="/terms">{t.footer.terms}</a>
+              <a href="mailto:ahmet@example.com">{t.footer.contact}</a>
+            </div>
+          </footer>
         </main>
         <Analytics />
       </div> </>
