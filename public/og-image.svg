@@ -1,0 +1,22 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffe7df"/>
+      <stop offset="100%" style="stop-color:#f8f6f2"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b4a"/>
+      <stop offset="100%" style="stop-color:#f2542d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="80" y="80" width="1040" height="470" rx="24" fill="white" opacity="0.8"/>
+  <rect x="100" y="100" width="80" height="80" rx="20" fill="url(#accent)"/>
+  <text x="200" y="155" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#0f1a1c">Academic Simplifier</text>
+  <text x="100" y="240" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#0f1a1c">Turn complex academic text</text>
+  <text x="100" y="300" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#0f1a1c">into clear, readable English.</text>
+  <text x="100" y="380" font-family="Arial, sans-serif" font-size="24" fill="#556066">AI-powered simplification. Free to use. No signup required.</text>
+  <rect x="100" y="430" width="200" height="56" rx="28" fill="url(#accent)"/>
+  <text x="200" y="465" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="white" text-anchor="middle">Try Now</text>
+  <text x="100" y="530" font-family="Arial, sans-serif" font-size="18" fill="#556066">simplify-academic.vercel.app</text>
+</svg>

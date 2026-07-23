@@ -491,6 +491,54 @@ export default function Home() {
         <meta
           name="google-site-verification"
           content="FwICLrj7I7T0K4oLso3MNY_7-ztr1EpxLVze5LBEHKM" />
+
+        <link rel="canonical" href="https://simplify-academic.vercel.app" />
+
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://simplify-academic.vercel.app" />
+        <meta property="og:title" content="Simplify Academic Papers with AI" />
+        <meta
+          property="og:description"
+          content="Turn complex academic papers into clear, readable English. AI-powered simplification with persona-based output. Free to use."
+        />
+        <meta property="og:image" content="https://simplify-academic.vercel.app/og-image.svg" />
+        <meta property="og:site_name" content="Academic Simplifier" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Simplify Academic Papers with AI" />
+        <meta
+          name="twitter:description"
+          content="Turn complex academic papers into clear, readable English. AI-powered simplification with persona-based output. Free to use."
+        />
+        <meta name="twitter:image" content="https://simplify-academic.vercel.app/og-image.svg" />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: "Academic Simplifier",
+              url: "https://simplify-academic.vercel.app",
+              description:
+                "Simplify complex academic papers into clear English while preserving technical terms. AI-powered academic text simplifier.",
+              applicationCategory: "EducationalApplication",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "USD",
+              },
+              featureList: [
+                "AI-powered academic text simplification",
+                "Multiple output personas (Student, Researcher, Business, Kid)",
+                "Protected terminology support",
+                "PDF and text export",
+                "Meaning preservation check",
+              ],
+            }),
+          }}
+        />
       </Head>
       <div className={`${styles.page} ${display.variable} ${body.variable}`}>
         <main className={styles.main}>
