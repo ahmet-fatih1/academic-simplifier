@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://simplify-academic.vercel.app
+
+# Sitemaps
+Sitemap: https://simplify-academic.vercel.app/sitemap.xml

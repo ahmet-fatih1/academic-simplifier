@@ -1,11 +1,15 @@
-import { ensureSchema, query } from "../../lib/db";
+import { ensureSchema } from "../../lib/db";
 import { buildChatSystemPrompt } from "../../lib/chat-prompt";
-import { isProStatus, getClientIdentity } from "../../lib/api-helpers";
+import { getClientIdentity, checkProStatus, checkRateLimit } from "../../lib/api-helpers";
+import { MAX_CONTEXT_CHARS } from "../../lib/constants";
 
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_MESSAGES = 50;
-const MAX_CONTEXT_CHARS = 8000;
 const CHAT_LIMIT_PER_DAY = 10;
+
+export const config = {
+  api: { bodyParser: { sizeLimit: "512kb" } },
+};
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -13,7 +17,7 @@ export default async function handler(req, res) {
   }
 
   if (!process.env.GEMINI_API_KEY) {
-    return res.status(500).json({ error: "GEMINI_API_KEY bulunamadı!" });
+    return res.status(500).json({ error: "GEMINI_API_KEY not found" });
   }
 
   const { messages, context, model, personaId, email } = req.body;
@@ -57,53 +61,21 @@ export default async function handler(req, res) {
     const normalizedEmail =
       typeof email === "string" && email.trim() ? email.trim().toLowerCase() : null;
 
-    let isPro = false;
-    if (normalizedEmail) {
-      const variantId = Number(process.env.LEMON_SQUEEZY_VARIANT_ID || 0);
-      const { rows } = await query(
-        `
-          SELECT status, cancelled
-          FROM subscriptions
-          WHERE email = $1
-          ${variantId ? "AND variant_id = $2" : ""}
-          ORDER BY updated_at DESC NULLS LAST, last_event_at DESC
-          LIMIT 1
-        `,
-        variantId ? [normalizedEmail, variantId] : [normalizedEmail]
-      );
-      const record = rows[0] || null;
-      isPro = record ? isProStatus(record.status, record.cancelled) : false;
-    }
+    const isPro = normalizedEmail ? await checkProStatus(normalizedEmail) : false;
 
     if (!isPro) {
       const identity = getClientIdentity(req, normalizedEmail, "chat:");
-      const today = new Date().toISOString().slice(0, 10);
-      const { rows } = await query(
-        `
-          INSERT INTO usage_limits (identity, day, count, updated_at)
-          VALUES ($1, $2, 1, NOW())
-          ON CONFLICT (identity, day)
-          DO UPDATE SET count = usage_limits.count + 1, updated_at = NOW()
-          RETURNING count
-        `,
-        [identity, today]
-      );
-      const count = rows[0]?.count ?? 0;
-      if (count > CHAT_LIMIT_PER_DAY) {
+      const isRateLimited = await checkRateLimit(identity, CHAT_LIMIT_PER_DAY);
+      if (isRateLimited) {
         return res.status(429).json({
           error: "Chat limit reached (10/day). Upgrade to Pro for unlimited.",
         });
       }
     }
 
-    const selectedModel =
-      model === "quality" && isPro ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "quality" && isPro ? "gemini-2.5-pro" : "gemini-2.5-flash";
 
-    const systemPrompt = buildChatSystemPrompt(
-      context.original,
-      context.simplified,
-      personaId
-    );
+    const systemPrompt = buildChatSystemPrompt(context.original, context.simplified, personaId);
 
     const contents = messages.map((msg) => ({
       role: msg.role,
@@ -128,7 +100,7 @@ export default async function handler(req, res) {
             maxOutputTokens: 1024,
           },
         }),
-      }
+      },
     );
 
     if (!geminiResponse.ok) {
@@ -165,8 +137,7 @@ export default async function handler(req, res) {
 
           try {
             const data = JSON.parse(raw);
-            const text =
-              data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
             if (text) {
               res.write(`data: ${JSON.stringify({ text })}\n\n`);
             }
@@ -179,8 +150,7 @@ export default async function handler(req, res) {
       if (buffer.startsWith("data: ")) {
         try {
           const data = JSON.parse(buffer.slice(6).trim());
-          const text =
-            data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
           if (text) {
             res.write(`data: ${JSON.stringify({ text })}\n\n`);
           }

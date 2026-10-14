@@ -1,9 +1,10 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback, memo } from "react";
 import styles from "../styles/Home.module.css";
 
 const MAX_MESSAGE_LENGTH = 2000;
+const SCROLL_THROTTLE_MS = 100;
 
-export default function ChatPanel({
+const ChatPanel = memo(function ChatPanel({
   isOpen,
   onToggle,
   messages,
@@ -16,20 +17,25 @@ export default function ChatPanel({
 }) {
   const messagesEndRef = useRef(null);
   const chatInputRef = useRef(null);
+  const lastScrollTime = useRef(0);
+  const scrollRaf = useRef(null);
 
-  const rafRef = useRef(null);
+  const throttledScroll = useCallback(() => {
+    const now = Date.now();
+    if (now - lastScrollTime.current < SCROLL_THROTTLE_MS) return;
+    if (scrollRaf.current) cancelAnimationFrame(scrollRaf.current);
+    scrollRaf.current = requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      lastScrollTime.current = Date.now();
+    });
+  }, []);
 
   useEffect(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    rafRef.current = requestAnimationFrame(() => {
-      if (messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    });
+    throttledScroll();
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (scrollRaf.current) cancelAnimationFrame(scrollRaf.current);
     };
-  }, [messages, streamingText]);
+  }, [messages, streamingText, throttledScroll]);
 
   const handleSend = () => {
     if (streaming) return;
@@ -52,28 +58,15 @@ export default function ChatPanel({
     <>
       <div className={styles.chatHeader}>
         <span className={styles.chatTitle}>{t.panelTitle}</span>
-        <button
-          className={styles.chatCloseBtn}
-          onClick={onToggle}
-          aria-label={t.panelClose}
-        >
+        <button className={styles.chatCloseBtn} onClick={onToggle} aria-label={t.panelClose}>
           ✕
         </button>
       </div>
 
-      <div className={styles.chatMessages}>
-        {messages.length === 0 && !streaming && (
-          <p className={styles.chatWelcome}>
-            {t.welcome}
-          </p>
-        )}
+      <div className={styles.chatMessages} aria-live="polite" aria-label="Chat messages">
+        {messages.length === 0 && !streaming && <p className={styles.chatWelcome}>{t.welcome}</p>}
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={
-              msg.role === "user" ? styles.chatUserMsg : styles.chatBotMsg
-            }
-          >
+          <div key={i} className={msg.role === "user" ? styles.chatUserMsg : styles.chatBotMsg}>
             {msg.content}
           </div>
         ))}
@@ -96,9 +89,7 @@ export default function ChatPanel({
           disabled={streaming}
         />
         <button
-          className={
-            streaming ? styles.chatSendBtnDisabled : styles.chatSendBtn
-          }
+          className={streaming ? styles.chatSendBtnDisabled : styles.chatSendBtn}
           onClick={handleSend}
           disabled={streaming}
         >
@@ -106,11 +97,9 @@ export default function ChatPanel({
         </button>
       </div>
 
-      {!isPro && (
-        <div className={styles.chatQuota}>
-          {t.quota(remainingQuota)}
-        </div>
-      )}
+      {!isPro && <div className={styles.chatQuota}>{t.quota(remainingQuota)}</div>}
     </>
   );
-}
+});
+
+export default ChatPanel;

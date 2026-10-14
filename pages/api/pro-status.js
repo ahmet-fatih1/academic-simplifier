@@ -1,6 +1,10 @@
 import { ensureSchema, query } from "../../lib/db";
 import { isProStatus } from "../../lib/api-helpers";
 
+export const config = {
+  api: { bodyParser: { sizeLimit: "16kb" } },
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -27,7 +31,7 @@ export default async function handler(req, res) {
         ORDER BY updated_at DESC NULLS LAST, last_event_at DESC
         LIMIT 1
       `,
-      variantId ? [normalizedEmail, variantId] : [normalizedEmail]
+      variantId ? [normalizedEmail, variantId] : [normalizedEmail],
     );
 
     const record = rows[0] || null;

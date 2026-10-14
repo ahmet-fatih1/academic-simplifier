@@ -2,4 +2,5 @@
 module.exports = {
   siteUrl: "https://simplify-academic.vercel.app",
   generateRobotsTxt: true,
+  exclude: ["/privacy", "/terms"],
 };

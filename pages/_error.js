@@ -7,10 +7,7 @@ function Error({ statusCode }) {
           ? "Internal server error. Please try again later."
           : "Something went wrong."}
       </p>
-      <button
-        className="errorBoundaryBtn"
-        onClick={() => (window.location.href = "/")}
-      >
+      <button className="errorBoundaryBtn" onClick={() => (window.location.href = "/")}>
         Go Home
       </button>
     </div>

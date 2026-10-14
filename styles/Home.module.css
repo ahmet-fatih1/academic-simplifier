@@ -14,9 +14,9 @@
   --surface-muted: #f4f1ed;
   --surface-disabled: #ece8e3;
   --surface-disabled-strong: #d5d0cb;
-  --border: rgba(26, 31, 37, 0.10);
+  --border: rgba(26, 31, 37, 0.1);
   --border-strong: rgba(26, 31, 37, 0.18);
-  --shadow: 0 18px 40px rgba(26, 31, 37, 0.10);
+  --shadow: 0 18px 40px rgba(26, 31, 37, 0.1);
   --shadow-sm: 0 2px 8px rgba(26, 31, 37, 0.06);
   --error: #c63d1f;
   --error-bg: #fef2f0;
@@ -34,7 +34,13 @@
     radial-gradient(circle at top, var(--bg-radial) 0%, transparent 55%),
     linear-gradient(180deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
   color: var(--ink);
-  font-family: var(--font-body);
+  font-family:
+    var(--font-body),
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
 }
 
 .darkMode {
@@ -47,7 +53,7 @@
   --accent-hover: #ff9070;
   --accent-light: rgba(255, 126, 96, 0.15);
   --accent-border: rgba(255, 126, 96, 0.25);
-  --accent-glow: rgba(255, 126, 96, 0.20);
+  --accent-glow: rgba(255, 126, 96, 0.2);
   --surface: #1c2126;
   --surface-warm: #22282d;
   --surface-muted: #262d33;
@@ -55,8 +61,8 @@
   --surface-disabled-strong: #353e46;
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.15);
-  --shadow: 0 18px 40px rgba(0, 0, 0, 0.30);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.20);
+  --shadow: 0 18px 40px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
   --error: #ff6b5a;
   --error-bg: rgba(255, 107, 90, 0.12);
   --warning: #ffc233;
@@ -126,8 +132,11 @@
 }
 
 .brandName {
+  display: block;
   font-weight: 600;
   font-size: 18px;
+  color: inherit;
+  text-decoration: none;
 }
 
 .brandTag {
@@ -141,7 +150,9 @@
   border: 1.5px solid var(--border);
   background: var(--surface);
   font-weight: 600;
-  transition: 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .proButton:hover {
@@ -165,7 +176,9 @@
   font-size: 18px;
   display: grid;
   place-items: center;
-  transition: 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
   line-height: 1;
 }
 
@@ -212,7 +225,9 @@
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 12px 24px var(--accent-glow);
-  transition: 0.2s ease;
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .primaryButton:hover {
@@ -330,7 +345,9 @@
   flex-direction: column;
   gap: 10px;
   box-shadow: var(--shadow-sm);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .featureCard:hover {
@@ -459,53 +476,6 @@
   gap: 16px;
 }
 
-.inputHeader {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
-}
-
-.inputHeader h2 {
-  font-size: 20px;
-}
-
-.inputHeader p {
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.modelHint {
-  font-size: 12px;
-  margin-top: 8px;
-}
-
-.inputActions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.inputActions select,
-.inputActions button {
-  min-width: 0;
-}
-
-@media (max-width: 600px) {
-  .inputActions {
-    gap: 8px;
-  }
-
-  .inputActions select,
-  .inputActions button {
-    flex: 1 1 auto;
-    min-width: 0;
-    font-size: 13px;
-    padding: 8px 14px;
-  }
-}
-
 .modelSelect {
   padding: 10px 18px;
   border-radius: 999px;
@@ -521,7 +491,7 @@
   background-repeat: no-repeat;
   background-position: right 14px center;
   padding-right: 36px;
-  transition: 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .modelSelect:hover {
@@ -540,7 +510,9 @@
   background: var(--surface);
   font-weight: 600;
   cursor: pointer;
-  transition: 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .secondaryButton:hover {
@@ -557,7 +529,9 @@
   border: 2px dashed var(--border);
   border-radius: 16px;
   padding: 16px;
-  transition: 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .pdfDropzoneActive {
@@ -614,7 +588,9 @@
 }
 
 @keyframes pdfSpin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .textarea {
@@ -629,7 +605,9 @@
   font-size: 15px;
   line-height: 1.7;
   resize: vertical;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   color-scheme: inherit;
 }
 
@@ -638,8 +616,9 @@
   -webkit-text-fill-color: var(--muted);
 }
 
-.textarea:focus {
-  outline: none;
+.textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
 }
@@ -687,7 +666,7 @@
   color-scheme: inherit;
 }
 
-.protectedInput:focus {
+.protectedInput:focus-visible {
   outline: none;
   border-color: var(--accent);
 }
@@ -749,7 +728,7 @@
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition: 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .compareToggle:hover {
@@ -994,7 +973,22 @@
   }
 
   .chatToggleButton {
-    display: flex !important;
+    display: flex;
+  }
+
+  .splitLayout.chatOpen .rightPanel {
+    display: flex;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100vh;
+    width: 400px;
+    z-index: 1000;
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.18);
+    animation: slideIn 0.25s ease;
+    border-radius: 0;
+    border: none;
+    border-left: 1.5px solid var(--border);
   }
 }
 
@@ -1118,7 +1112,7 @@
 }
 
 .compareProCell {
-  color: var(--accent) !important;
+  color: var(--accent);
   font-weight: 600;
 }
 
@@ -1150,6 +1144,47 @@
 
 .footerLinks a:hover {
   color: var(--accent);
+}
+
+.footerTools {
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.seoContent {
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.seoContent h2 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--ink-heading);
+  margin-bottom: 12px;
+}
+
+.seoContent section > p,
+.faqItem p {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 10px;
+}
+
+.faqItem {
+  padding: 16px 0;
+  border-bottom: 1.5px solid var(--border);
+}
+
+.faqItem h3 {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink-heading);
+  margin-bottom: 6px;
 }
 
 @media (max-width: 600px) {
@@ -1194,13 +1229,9 @@
     display: none;
   }
 
-  .chatDrawer {
+  .splitLayout.chatOpen .rightPanel {
     display: flex;
-    width: 100% !important;
-  }
-
-  .chatBackdrop {
-    display: block;
+    width: 100%;
   }
 }
 
@@ -1213,29 +1244,29 @@
   animation: fadeIn 0.2s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@media (max-width: 900px) {
+  .splitLayout.chatOpen .chatBackdrop,
+  .chatBackdrop {
+    display: block;
+  }
 }
 
-.chatDrawer {
-  display: none;
-  position: fixed;
-  right: 0;
-  top: 0;
-  height: 100vh;
-  width: 400px;
-  flex-direction: column;
-  background: var(--surface);
-  z-index: 1000;
-  box-shadow: -8px 0 30px rgba(0, 0, 0, 0.12);
-  animation: slideIn 0.25s ease;
-  overflow: hidden;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 
 .chatHeader {
@@ -1316,7 +1347,13 @@
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 14px;
-  font-family: var(--font-body);
+  font-family:
+    var(--font-body),
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
   min-height: 40px;
   max-height: 120px;
   line-height: 1.4;
@@ -1331,7 +1368,7 @@
   -webkit-text-fill-color: var(--muted);
 }
 
-.chatInput:focus {
+.chatInput:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: -1px;
 }
@@ -1402,7 +1439,9 @@
   font-weight: 600;
   font-size: 15px;
   color: var(--accent);
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 }
 
 .chatToggleButton:hover {

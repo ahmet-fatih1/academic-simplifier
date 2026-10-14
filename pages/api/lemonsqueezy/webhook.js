@@ -35,10 +35,7 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: "Missing signature" });
   }
 
-  const computed = crypto
-    .createHmac("sha256", secret)
-    .update(rawBody)
-    .digest("hex");
+  const computed = crypto.createHmac("sha256", secret).update(rawBody).digest("hex");
 
   if (!timingSafeEqual(Buffer.from(computed), Buffer.from(signature))) {
     return res.status(401).json({ error: "Invalid signature" });
@@ -67,11 +64,7 @@ export default async function handler(req, res) {
   }
 
   const subscriptionId = data?.id ? String(data.id) : null;
-  const email =
-    attributes?.user_email ||
-    attributes?.customer_email ||
-    attributes?.email ||
-    null;
+  const email = attributes?.user_email || attributes?.customer_email || attributes?.email || null;
   const normalizedEmail = email ? String(email).toLowerCase() : null;
 
   await ensureSchema();
@@ -128,7 +121,7 @@ export default async function handler(req, res) {
         testMode,
         eventName,
         payload,
-      ]
+      ],
     );
   }
 

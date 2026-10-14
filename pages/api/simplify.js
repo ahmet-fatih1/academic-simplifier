@@ -1,78 +1,51 @@
-import { ensureSchema, query } from "../../lib/db";
 import { getPersonaById } from "../../lib/personas";
-import { isProStatus, getClientIdentity } from "../../lib/api-helpers";
+import {
+  isProStatus,
+  getClientIdentity,
+  parseProtectedTerms,
+  checkProStatus,
+  checkRateLimit,
+} from "../../lib/api-helpers";
+import { ensureSchema } from "../../lib/db";
+
+export const config = {
+  api: { bodyParser: { sizeLimit: "1mb" } },
+};
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { text, model, task, language, level, terms, reductionTarget, email, personaId } =
-    req.body;
+  const { text, model, task, language, level, terms, reductionTarget, email, personaId } = req.body;
 
   if (!text) {
     return res.status(400).json({ error: "Text is required" });
   }
 
   if (!process.env.GEMINI_API_KEY) {
-    return res.status(500).json({ error: "GEMINI_API_KEY bulunamadı!" });
+    return res.status(500).json({ error: "GEMINI_API_KEY not found" });
   }
 
   try {
     // DOĞRU MODEL: gemini-2.5-flash
-    const selectedModel =
-      model === "quality" ? "gemini-2.5-pro" : "gemini-2.5-flash";
+    const selectedModel = model === "quality" ? "gemini-2.5-pro" : "gemini-2.5-flash";
     const url = `https://generativelanguage.googleapis.com/v1/models/${selectedModel}:generateContent`;
 
     const selectedTask =
-      task === "summary" || task === "verify" || task === "bundle"
-        ? task
-        : "simplify";
+      task === "summary" || task === "verify" || task === "bundle" ? task : "simplify";
     const targetLanguage = language || "English";
-    const protectedTerms =
-      Array.isArray(terms) && terms.length
-        ? terms
-            .map((item) => String(item).trim())
-            .filter(Boolean)
-            .slice(0, 20)
-        : [];
+    const protectedTerms = parseProtectedTerms(terms);
 
     await ensureSchema();
     const normalizedEmail =
       typeof email === "string" && email.trim() ? email.trim().toLowerCase() : null;
-    let isPro = false;
-    if (normalizedEmail) {
-      const variantId = Number(process.env.LEMON_SQUEEZY_VARIANT_ID || 0);
-      const { rows } = await query(
-        `
-          SELECT status, cancelled
-          FROM subscriptions
-          WHERE email = $1
-          ${variantId ? "AND variant_id = $2" : ""}
-          ORDER BY updated_at DESC NULLS LAST, last_event_at DESC
-          LIMIT 1
-        `,
-        variantId ? [normalizedEmail, variantId] : [normalizedEmail]
-      );
-      const record = rows[0] || null;
-      isPro = record ? isProStatus(record.status, record.cancelled) : false;
-    }
+    const isPro = normalizedEmail ? await checkProStatus(normalizedEmail) : false;
 
     if (!isPro && selectedTask === "simplify") {
       const identity = getClientIdentity(req, normalizedEmail);
-      const today = new Date().toISOString().slice(0, 10);
-      const { rows } = await query(
-        `
-          INSERT INTO usage_limits (identity, day, count, updated_at)
-          VALUES ($1, $2, 1, NOW())
-          ON CONFLICT (identity, day)
-          DO UPDATE SET count = usage_limits.count + 1, updated_at = NOW()
-          RETURNING count
-        `,
-        [identity, today]
-      );
-      const count = rows[0]?.count ?? 0;
-      if (count > 5) {
+      const isRateLimited = await checkRateLimit(identity, 5);
+      if (isRateLimited) {
         return res.status(429).json({
           error: "Free limit reached. Upgrade to Pro for unlimited use.",
         });
@@ -142,8 +115,7 @@ ${text.simplified}`;
         ],
         generationConfig: {
           temperature: 0.3,
-          maxOutputTokens:
-            selectedTask === "summary" ? 256 : selectedTask === "bundle" ? 384 : 512,
+          maxOutputTokens: selectedTask === "summary" ? 256 : selectedTask === "bundle" ? 384 : 512,
         },
       }),
     });
@@ -168,11 +140,7 @@ ${text.simplified}`;
             generationConfig: {
               temperature: 0.3,
               maxOutputTokens:
-                selectedTask === "summary"
-                  ? 256
-                  : selectedTask === "bundle"
-                    ? 384
-                    : 512,
+                selectedTask === "summary" ? 256 : selectedTask === "bundle" ? 384 : 512,
             },
           }),
         });
@@ -180,9 +148,7 @@ ${text.simplified}`;
         const fallbackText = await fallback.text();
         if (fallback.ok) {
           const data = JSON.parse(fallbackText);
-          const result =
-            data?.candidates?.[0]?.content?.parts?.[0]?.text ||
-            "Sonuç bulunamadı";
+          const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No result found";
           if (selectedTask === "bundle") {
             let parsed = null;
             try {
@@ -211,17 +177,14 @@ ${text.simplified}`;
     }
 
     const data = JSON.parse(responseText);
-    const result =
-      data?.candidates?.[0]?.content?.parts?.[0]?.text || "Sonuç bulunamadı";
+    const result = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No result found";
 
     if (selectedTask === "verify") {
       let parsed = null;
       try {
         parsed = JSON.parse(result);
       } catch (_) {
-        const match =
-          /match\s*:\s*true/i.test(result) ||
-          /"match"\s*:\s*true/i.test(result);
+        const match = /match\s*:\s*true/i.test(result) || /"match"\s*:\s*true/i.test(result);
         const riskMatch = result.match(/risk"\s*:\s*"(low|medium|high)"/i);
         parsed = {
           match,
@@ -263,9 +226,7 @@ ${text.simplified}`;
       }
 
       if (!meaning) {
-        const match =
-          /match\s*:\s*true/i.test(result) ||
-          /"match"\s*:\s*true/i.test(result);
+        const match = /match\s*:\s*true/i.test(result) || /"match"\s*:\s*true/i.test(result);
         const riskMatch = result.match(/risk"\s*:\s*"(low|medium|high)"/i);
         meaning = {
           match,
