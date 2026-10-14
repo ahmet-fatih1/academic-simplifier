@@ -52,12 +52,6 @@ export default function Terms() {
           arising from the use of this service.
         </p>
 
-        <h3>7. Contact</h3>
-        <p>
-          For questions about these terms, contact us at{" "}
-          <a href="mailto:ahmet@example.com">ahmet@example.com</a>.
-        </p>
-
         <button className="errorBoundaryBtn" onClick={() => (window.location.href = "/")}>
           Go Home
         </button>

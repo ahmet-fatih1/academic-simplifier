@@ -100,8 +100,8 @@
 | 51 | FAQPage JSON-LD + footer'da iç linkler | ✅ |
 | 52 | Sitemap'ten noindex sayfaları çıkar | ✅ |
 | 53 | `href="CHECKOUT_URL"` hatası — Pro butonları 404'e gidiyordu | ✅ |
-| 54 | Deploy sonrası Search Console'a sitemap gönder, yeni URL'leri dizine ekleme iste | ⬜ |
-| 55 | "Trusted by 12,000+ researchers" ifadesini gerçek veriyle değiştir veya kaldır | ⬜ |
-| 56 | Footer/privacy'deki `ahmet@example.com` yer tutucusunu gerçek adresle değiştir | ⬜ |
+| 54 | Deploy sonrası Search Console'a sitemap gönder, yeni URL'leri dizine ekleme iste | 🔄 Sitemap gönderildi, URL istekleri günlük kota yüzünden kısmen kaldı |
+| 55 | "Trusted by 12,000+ researchers" ifadesini kaldır (gerçek değildi) | ✅ |
+| 56 | `ahmet@example.com` yer tutucusu kaldırıldı — gerçek adres alınınca footer/privacy/terms'e geri ekle | 🔄 |
 | 57 | 4–6 hafta sonra Search Console'da sayfa bazlı sonuçları ölç | ⬜ |
 | 58 | Kendi alan adı (opsiyonel, ~10–12 $/yıl .com) | ⬜ |

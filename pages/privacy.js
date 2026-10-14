@@ -47,12 +47,6 @@ export default function Privacy() {
           tracking cookies are used.
         </p>
 
-        <h3>6. Contact</h3>
-        <p>
-          For privacy-related questions, contact us at{" "}
-          <a href="mailto:ahmet@example.com">ahmet@example.com</a>.
-        </p>
-
         <button className="errorBoundaryBtn" onClick={() => (window.location.href = "/")}>
           Go Home
         </button>

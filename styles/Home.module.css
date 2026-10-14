@@ -1019,14 +1019,6 @@
   background: #f0f0f0;
 }
 
-.socialProof {
-  font-size: 13px;
-  color: var(--muted);
-  font-weight: 500;
-  margin-top: -4px;
-  margin-bottom: 16px;
-}
-
 .demoCard {
   margin-bottom: 28px;
   background: var(--surface);

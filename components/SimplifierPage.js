@@ -907,7 +907,6 @@ export default function SimplifierPage({ seo }) {
             <div>
               <h1>{seo.h1 || t.hero.title}</h1>
               <p>{seo.intro || t.hero.description}</p>
-              <p className={styles.socialProof}>{t.hero.socialProof}</p>
               <div className={styles.heroActions}>
                 <button
                   className={styles.primaryButton}
@@ -1552,7 +1551,6 @@ export default function SimplifierPage({ seo }) {
             <div className={styles.footerLinks}>
               <Link href="/privacy">{t.footer.privacy}</Link>
               <Link href="/terms">{t.footer.terms}</Link>
-              <a href="mailto:ahmet@example.com">{t.footer.contact}</a>
             </div>
           </footer>
         </main>
